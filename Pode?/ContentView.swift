@@ -11,6 +11,9 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
+    
+    @State private var scannedText: String = ""
+    @State private var presentScanner: Bool = false
 
     var body: some View {
         NavigationSplitView {
@@ -26,6 +29,13 @@ struct ContentView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        presentScanner = true
+                    } label: {
+                        Label("Ler Tabela", systemImage: "camera.viewfinder")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
@@ -35,7 +45,19 @@ struct ContentView: View {
                 }
             }
         } detail: {
-            Text("Select an item")
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Texto da Tabela Nutricional")
+                    .font(.title3).bold()
+                ScrollView {
+                    Text(scannedText.isEmpty ? "Toque em 'Ler Tabela' para capturar o texto da tabela nutricional." : scannedText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                }
+            }
+            .padding()
+        }
+        .sheet(isPresented: $presentScanner) {
+            CameraTextScannerView(text: $scannedText)
         }
     }
 
