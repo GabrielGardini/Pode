@@ -40,6 +40,44 @@ class CameraViewController: UIViewController {
             print("Erro ao acessar câmera")
             return
         }
+        
+        // MARK: - CONFIGURAÇÃO AVANÇADA DA CÂMERA
+        do {
+            try device.lockForConfiguration()
+
+            // 🔍 FOCO CONTÍNUO
+            if device.isFocusModeSupported(.continuousAutoFocus) {
+                device.focusMode = .continuousAutoFocus
+            }
+
+            // 🎯 FOCO NO CENTRO
+            if device.isFocusPointOfInterestSupported {
+                device.focusPointOfInterest = CGPoint(x: 0.5, y: 0.5)
+            }
+
+            // 🔎 FOCO PRÓXIMO (macro - MUITO IMPORTANTE)
+            if device.isAutoFocusRangeRestrictionSupported {
+                device.autoFocusRangeRestriction = .near
+            }
+
+            // 💡 EXPOSIÇÃO CONTÍNUA
+            if device.isExposureModeSupported(.continuousAutoExposure) {
+                device.exposureMode = .continuousAutoExposure
+            }
+
+            // 🎯 EXPOSIÇÃO NO CENTRO
+            if device.isExposurePointOfInterestSupported {
+                device.exposurePointOfInterest = CGPoint(x: 0.5, y: 0.5)
+            }
+
+            // 🔥 REDUZ ESTOURO DE BRANCO (evita reflexo)
+            device.setExposureTargetBias(-0.3)
+
+            device.unlockForConfiguration()
+
+        } catch {
+            print("Erro ao configurar câmera: \(error)")
+        }
 
         do {
             let input = try AVCaptureDeviceInput(device: device)
@@ -55,6 +93,18 @@ class CameraViewController: UIViewController {
 
         // MARK: - Configura saída de foto
         photoOutput = AVCapturePhotoOutput()
+        
+        // Prioriza qualidade máxima da foto
+        photoOutput.maxPhotoQualityPrioritization = .quality
+        
+        if let connection = photoOutput.connection(with: .video) {
+            if connection.isVideoStabilizationSupported {
+                connection.preferredVideoStabilizationMode = .auto
+            }
+            
+            // Garante orientação correta
+            connection.videoRotationAngle = 90
+        }
 
         if captureSession.canAddOutput(photoOutput) {
             captureSession.addOutput(photoOutput)
@@ -92,6 +142,12 @@ class CameraViewController: UIViewController {
     @objc func capturePhoto() {
 
         let settings = AVCapturePhotoSettings()
+
+        // Prioriza qualidade
+        settings.photoQualityPrioritization = .quality
+
+        // Desliga flash (evita reflexo)
+        settings.flashMode = .off
 
         // Dispara a captura
         photoOutput.capturePhoto(with: settings, delegate: self)
