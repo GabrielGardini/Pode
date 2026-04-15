@@ -1,5 +1,5 @@
 //
-//  AddChild.swift
+//  AddChildView.swift
 //  Pode?
 //
 //  Created by Marlon Ribas on 15/04/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct AddChild: View {
+struct AddChildView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
@@ -48,7 +48,12 @@ struct AddChild: View {
                         row("Crustáceos")
                         row("Gergelim")
                     } label: {
-                        Label("Alergias alimentares", systemImage: "exclamationmark.triangle")
+                        Label {
+                            Text("Alergias alimentares")
+                                .fontWeight(.bold)
+                        } icon: {
+                            Image(systemName: "exclamationmark.triangle")
+                        }
                     }
                     
                     DisclosureGroup {
@@ -56,13 +61,23 @@ struct AddChild: View {
                         row("Glúten")
                         row("Frutose")
                     } label: {
-                        Label("Intolerâncias alimentares", systemImage: "drop.triangle")
+                        Label {
+                            Text("Intolerâncias alimentares")
+                                .fontWeight(.bold)
+                        } icon: {
+                            Image(systemName: "drop.triangle")
+                        }
                     }
                     
                     DisclosureGroup {
                         row("Doença celíaca")
                     } label: {
-                        Label("Condições médicas", systemImage: "cross.case")
+                        Label {
+                            Text("Condições médicas")
+                                .fontWeight(.bold)
+                        } icon: {
+                            Image(systemName: "cross.case")
+                        }
                     }
                 }
             }
