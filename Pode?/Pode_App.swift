@@ -5,8 +5,9 @@ import SwiftData
 struct Pode_App: App {
     var body: some Scene {
         WindowGroup {
-            RootView()
+            ContentView()
         }
-        .modelContainer(for: [Crianca.self])
+        .modelContainer(for: [Child.self])
     }
 }
+

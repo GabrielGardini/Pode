@@ -1,0 +1,122 @@
+//
+//  AddChild.swift
+//  Pode?
+//
+//  Created by Marlon Ribas on 15/04/26.
+//
+
+import SwiftUI
+import SwiftData
+
+struct AddChild: View {
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var name: String = ""
+    @State private var birthDate: Date = .now
+    @State private var allergies: [String] = []
+    
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section(header: Text("Nome")) {
+                    TextField("", text: $name)
+                        .textInputAutocapitalization(.words)
+                }
+                
+                Section(header: Text("Data de nascimento")) {
+                    DatePicker(
+                        "",
+                        selection: $birthDate,
+                        in: ...Date(),
+                        displayedComponents: [.date]
+                    )
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                }
+                
+                Section(header: Text("Restrições alimentares")) {
+                    DisclosureGroup {
+                        row("Amendoim")
+                        row("Nozes")
+                        row("Leite")
+                        row("Ovos")
+                        row("Soja")
+                        row("Trigo")
+                        row("Peixes")
+                        row("Crustáceos")
+                        row("Gergelim")
+                    } label: {
+                        Label("Alergias alimentares", systemImage: "exclamationmark.triangle")
+                    }
+                    
+                    DisclosureGroup {
+                        row("Lactose")
+                        row("Glúten")
+                        row("Frutose")
+                    } label: {
+                        Label("Intolerâncias alimentares", systemImage: "drop.triangle")
+                    }
+                    
+                    DisclosureGroup {
+                        row("Doença celíaca")
+                    } label: {
+                        Label("Condições médicas", systemImage: "cross.case")
+                    }
+                }
+            }
+            .navigationTitle("Adicionar criança")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(role: .confirm) {
+                        save()
+                        dismiss()
+                    }
+                    .disabled(name.isEmpty)
+                }
+            }
+        }
+    }
+    
+    func save() {
+        print(name)
+        print(birthDate)
+        print(allergies)
+        
+        let child = Child(
+            name: name,
+            birthDate: birthDate,
+            allergies: allergies
+        )
+        
+        modelContext.insert(child)
+    }
+    
+    func row(_ item: String) -> some View {
+        Button {
+            if allergies.contains(item) {
+                allergies.removeAll { $0 == item }
+            } else {
+                allergies.append(item)
+            }
+        } label: {
+            HStack {
+                Text(item)
+                
+                Spacer()
+                
+                Image(systemName: allergies.contains(item) ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(allergies.contains(item) ? .accentColor : .gray)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}

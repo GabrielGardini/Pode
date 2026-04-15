@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import Combine
 import Vision
 import AVFoundation
@@ -21,15 +22,19 @@ struct ParsedTable {
 }
 
 struct ContentView: View {
+    @Query var children: [Child]
+    @Environment(\.modelContext) var modelContext
     
     @State private var scannedText: String = ""
     @State private var presentScanner: Bool = false
+    @State private var presentAddChild: Bool = false
 
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Toque em 'Ler Tabela' para capturar o texto da tabela nutricional.")
-                    .padding()
+                List(children) { c in
+                    Text(c.name)
+                }
             }
             .padding()
             .navigationTitle("Pode?")
@@ -41,11 +46,17 @@ struct ContentView: View {
                         Label("Ler Tabela", systemImage: "camera.viewfinder")
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        presentAddChild = true
+                    } label: {
+                        Label("Ler Tabela", systemImage: "plus")
+                    }
+                }
             }
         }
         .sheet(isPresented: $presentScanner) {
             CameraView { imageData in
-                
                 Task {
                     do {
                         let table = try await extractTable(from: imageData)
@@ -57,6 +68,9 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $presentAddChild) {
+            AddChild()
         }
     }
     
