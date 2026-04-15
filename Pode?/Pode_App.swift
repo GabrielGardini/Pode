@@ -10,4 +10,3 @@ struct Pode_App: App {
         .modelContainer(for: [Child.self])
     }
 }
-
