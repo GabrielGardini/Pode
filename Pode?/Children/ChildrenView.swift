@@ -15,14 +15,19 @@ struct ChildrenView: View {
     @State private var viewModel = ChildViewModel()
     
     @State private var presentAddChild: Bool = false
-    
+    @State private var selectedChild: Child? = nil
+        
     var body: some View {
         NavigationStack {
             VStack {
                 List(children) { child in
-                    ChildCardView(child: child)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
+                    ChildCardView(
+                        child: child,
+                        viewModel: viewModel,
+                        selectedChild: $selectedChild
+                    )
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
@@ -40,6 +45,12 @@ struct ChildrenView: View {
             }
             .sheet(isPresented: $presentAddChild) {
                 AddChildView(viewModel: viewModel)
+            }
+            .sheet(item: $selectedChild) { child in
+                EditChildView(
+                    child: child,
+                    viewModel: viewModel
+                )
             }
         }
     }
