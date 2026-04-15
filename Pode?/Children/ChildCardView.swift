@@ -36,7 +36,6 @@ struct ChildCardView: View {
                     Text(allergiesText(child.allergies))
                         .font(.body)
                         .foregroundStyle(.orange)
-                        .lineLimit(1)
                 }
             }
             .padding()

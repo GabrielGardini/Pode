@@ -12,6 +12,8 @@ struct AddChildView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
+    var viewModel: ChildViewModel
+    
     @State private var name: String = ""
     @State private var birthDate: Date = .now
     @State private var allergies: [String] = []
@@ -92,27 +94,13 @@ struct AddChildView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(role: .confirm) {
-                        save()
+                        viewModel.addChild(name: name, birthDate: birthDate, allergies: allergies, context: modelContext)
                         dismiss()
                     }
                     .disabled(name.isEmpty)
                 }
             }
         }
-    }
-    
-    func save() {
-        print(name)
-        print(birthDate)
-        print(allergies)
-        
-        let child = Child(
-            name: name,
-            birthDate: birthDate,
-            allergies: allergies
-        )
-        
-        modelContext.insert(child)
     }
     
     func row(_ item: String) -> some View {

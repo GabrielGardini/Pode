@@ -12,6 +12,8 @@ struct ChildrenView: View {
     @Query var children: [Child]
     @Environment(\.modelContext) var modelContext
     
+    @State private var viewModel = ChildViewModel()
+    
     @State private var presentAddChild: Bool = false
     
     var body: some View {
@@ -37,7 +39,7 @@ struct ChildrenView: View {
                 }
             }
             .sheet(isPresented: $presentAddChild) {
-                AddChildView()
+                AddChildView(viewModel: viewModel)
             }
         }
     }
