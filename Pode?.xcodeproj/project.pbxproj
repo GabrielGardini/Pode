@@ -29,9 +29,33 @@
 		1A9E334E2F8D2B4B003D99FF /* Pode?UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Pode?UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1A9129C92F8FD682006C098A /* Exceptions for "Pode?" folder in "Pode?" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				answer.json,
+			);
+			target = 1A9E33342F8D2B49003D99FF /* Pode? */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		1A9129CA2F8FD682006C098A /* Exceptions for "Pode?" folder in "Compile Sources" phase from "Pode?" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 1A9E33312F8D2B49003D99FF /* Sources */;
+			membershipExceptions = (
+				answer.json,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1A9E33372F8D2B49003D99FF /* Pode? */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1A9129C92F8FD682006C098A /* Exceptions for "Pode?" folder in "Pode?" target */,
+				1A9129CA2F8FD682006C098A /* Exceptions for "Pode?" folder in "Compile Sources" phase from "Pode?" target */,
+			);
 			path = "Pode?";
 			sourceTree = "<group>";
 		};
@@ -397,7 +421,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KH4Y5ANACG;
+				DEVELOPMENT_TEAM = 7JULNSTCHT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Pode--Info.plist";
@@ -430,7 +454,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KH4Y5ANACG;
+				DEVELOPMENT_TEAM = 7JULNSTCHT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Pode--Info.plist";
