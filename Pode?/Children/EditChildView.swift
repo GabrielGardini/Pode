@@ -1,5 +1,5 @@
 //
-//  AddChildView.swift
+//  EditChildView.swift
 //  Pode?
 //
 //  Created by Marlon Ribas on 15/04/26.
@@ -8,28 +8,39 @@
 import SwiftUI
 import SwiftData
 
-struct AddChildView: View {
+struct EditChildView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
+    let child: Child
     var viewModel: ChildViewModel
     
-    @State private var name: String = ""
-    @State private var birthDate: Date = .now
-    @State private var allergies: [String] = []
+    @State private var newName: String = ""
+    @State private var newBirthDate: Date = .now
+    @State private var newAllergies: [String] = []
+    
+    // INIT para pré-preencher os dados
+    init(child: Child, viewModel: ChildViewModel) {
+        self.child = child
+        self.viewModel = viewModel
+        
+        _newName = State(initialValue: child.name)
+        _newBirthDate = State(initialValue: child.birthDate)
+        _newAllergies = State(initialValue: child.allergies)
+    }
     
     var body: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Nome")) {
-                    TextField("", text: $name)
+                    TextField("\(child.name)", text: $newName)
                         .textInputAutocapitalization(.words)
                 }
                 
                 Section(header: Text("Data de nascimento")) {
                     DatePicker(
                         "",
-                        selection: $birthDate,
+                        selection: $newBirthDate,
                         in: ...Date(),
                         displayedComponents: [.date]
                     )
@@ -82,7 +93,7 @@ struct AddChildView: View {
                     }
                 }
             }
-            .navigationTitle("Adicionar criança")
+            .navigationTitle("Editar criança")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -93,10 +104,14 @@ struct AddChildView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(role: .confirm) {
-                        viewModel.addChild(name: name, birthDate: birthDate, allergies: allergies, context: modelContext)
+                        viewModel.editChild(
+                                child,
+                                name: newName,
+                                birthDate: newBirthDate,
+                                allergies: newAllergies
+                            )
                         dismiss()
                     }
-                    .disabled(name.isEmpty)
                 }
             }
         }
@@ -104,21 +119,29 @@ struct AddChildView: View {
     
     func row(_ item: String) -> some View {
         Button {
-            if allergies.contains(item) {
-                allergies.removeAll { $0 == item }
-            } else {
-                allergies.append(item)
-            }
+            toggle(item)
         } label: {
             HStack {
                 Text(item)
                 
                 Spacer()
                 
-                Image(systemName: allergies.contains(item) ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(allergies.contains(item) ? .accentColor : .gray)
+                Image(systemName: newAllergies.contains(item) ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(newAllergies.contains(item) ? .accentColor : .gray)
             }
         }
         .buttonStyle(.plain)
+    }
+    
+    func toggle(_ item: String) {
+        if newAllergies.contains(item) {
+            newAllergies.removeAll { $0 == item }
+        } else {
+            newAllergies.append(item)
+        }
+    }
+    
+    func isSelected(_ item: String) -> Bool {
+        newAllergies.contains(item)
     }
 }

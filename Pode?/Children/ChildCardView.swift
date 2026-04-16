@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct ChildCardView: View {
+    @Environment(\.modelContext) var modelContext
+    
     let child: Child
+    var viewModel: ChildViewModel
+    
+    @Binding var selectedChild: Child?
     
     @State private var isPressed = false
 
@@ -42,13 +47,26 @@ struct ChildCardView: View {
             
             Spacer()
         }
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 32))
+//        .background(.ultraThickMaterial)
+//        .clipShape(RoundedRectangle(cornerRadius: 32))
         .scaleEffect(isPressed ? 0.97 : 1)
         .animation(.easeInOut(duration: 0.15), value: isPressed)
         .onLongPressGesture(minimumDuration: 0, pressing: { pressing in
             isPressed = pressing
-        }, perform: {}) // fazer algo aqui
+        }, perform: {})
+        .contextMenu {
+            Button {
+                selectedChild = child
+            } label: {
+                Label("Editar", systemImage: "pencil")
+            }
+
+            Button(role: .destructive) {
+                viewModel.removeChild(child, context: modelContext)
+            } label: {
+                Label("Excluir", systemImage: "trash")
+            }
+        }
     }
 }
 
