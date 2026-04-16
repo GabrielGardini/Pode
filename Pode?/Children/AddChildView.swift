@@ -18,7 +18,6 @@ struct AddChildView: View {
     @State private var birthDate: Date = .now
     @State private var allergies: [String] = []
     
-    
     var body: some View {
         NavigationStack {
             Form {
