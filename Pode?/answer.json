@@ -1,0 +1,69 @@
+{
+  "food": {
+    "name": "Snack salgado ultraprocessado desconhecido",
+    "summary": "Alimento ultraprocessado com alto teor de sódio, muitos carboidratos refinados, açúcar moderado e alguma fibra.",
+    "calories": {
+      "por_100g": 410,
+      "por_porcao": 82,
+      "porcao_g": 20
+    },
+    "highlights": [
+      {
+        "type": "warning",
+        "title": "Alto teor de sódio",
+      },
+      {
+        "type": "warning",
+        "title": "Perfil ultraprocessado",
+      },
+      {
+        "type": "positive",
+        "title": "Contém fibra",
+      }
+    ],
+    "health_score": {
+      "score": 4,
+      "max_score": 100,
+      "label": "pouco_saudavel"
+    },
+    "inferred_food_type": {
+      "label": "Provável biscoito salgado, cracker ou snack industrializado",
+      "confidence": "baixa"
+    }
+  },
+  "children": [
+    {
+      "name": "Filho 18 meses",
+      "age_months": 18,
+      "recommendation": {
+        "recomended": "false",
+        "short_text": "Evitar consumo regular"
+      },
+      "justifications": [
+        "Teor de sódio alto para a idade",
+        "Alimento ultraprocessado não é ideal para menores de 2 anos",
+        "Quantidade alta de carboidratos refinados",
+        "Tem açúcar e qualidade nutricional inferior quando comparado a alimentos in natura"
+      ],
+      "frequency": {
+        "allowed": false,
+        "description": "Melhor evitar; se houver consumo, que seja apenas de forma excepcional e em quantidade muito pequena."
+      },
+      "alternatives": [
+        {
+          "name": "Pedaços de frutas frescas",
+        },
+        {
+          "name": "Iogurte natural sem açúcar",
+        },
+        {
+          "name": "Panqueca caseira de aveia",
+        },
+        {
+          "name": "Palitos de batata-doce cozida",
+        }
+      ]
+    },
+    
+  ]
+}
