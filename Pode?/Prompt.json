@@ -155,7 +155,6 @@ Crianças:
     {
       "name": "string",
       "age_months": number | null,
-      "age_years": number | null,
       "recommendation": {
         "recommended": true | false,
         "short_text": "mensagem curta"

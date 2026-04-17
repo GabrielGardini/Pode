@@ -29,9 +29,21 @@ struct ScanView: View {
     @State private var presentScanner: Bool = false
     @State private var formattedTable: String = ""
 
+    @State private var showFoodAnalysis: Bool = false
+    @State private var analysisInput: String? = nil
+    
+    @State private var result: String? = nil
+
     var body: some View {
         NavigationStack {
             VStack {
+                NavigationLink(isActive: $showFoodAnalysis) {
+                    FoodAnalysisView(json: result)
+                } label: {
+                    EmptyView()
+                }
+                .hidden()
+                
                 Text("Scaneie a tabela nutricional!")
                 
                 if !formattedTable.isEmpty {
@@ -64,6 +76,10 @@ struct ScanView: View {
                         let formatted = formatTable(parsed)
                         formattedTable = formatted
                         await handleScannedTable(parsed)
+                        
+                        await MainActor.run {
+                            showFoodAnalysis = true
+                        }
                     } catch {
                         print("Erro: \(error)")
                     }
@@ -171,8 +187,12 @@ struct ScanView: View {
             let descriptor = FetchDescriptor<Child>()
             let fetchedChildren = try modelContext.fetch(descriptor)
             
-            // Call your request with the fetched children
-            _ = await requisicao(description: "kitkat", table: formatTable(table), children: fetchedChildren)
+            self.result = await requisicao(description: "cheetos", table: formatTable(table), children: fetchedChildren)
+            // Optionally retain input for next view if needed
+            await MainActor.run {
+                analysisInput = formatTable(table)
+            }
+            
         } catch {
             // Handle fetch errors appropriately (log or show UI as needed)
             print("Failed to fetch children: \(error)")

@@ -3,8 +3,8 @@ import SwiftUI
 struct FoodAnalysisView: View {
     @StateObject private var viewModel: FoodAnalysisViewModel
 
-    init(json: String) {
-        _viewModel = StateObject(wrappedValue: FoodAnalysisViewModel(json: json))
+    init(json: String?) {
+        _viewModel = StateObject(wrappedValue: FoodAnalysisViewModel(json: json ?? ""))
     }
 
     var body: some View {
@@ -609,3 +609,4 @@ private enum HealthColors {
     """)
     .tint(.pink)
 }
+

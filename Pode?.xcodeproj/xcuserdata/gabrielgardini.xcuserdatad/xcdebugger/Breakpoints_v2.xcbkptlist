@@ -7,17 +7,61 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D0B0BB2E-2611-4F83-9700-486B069FF57E"
-            shouldBeEnabled = "No"
+            uuid = "CA903D24-6DDD-4977-BB40-4D388A45738D"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pode?/ScanView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
             landmarkName = "handleScannedTable(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CA903D24-6DDD-4977-BB40-4D388A45738D - e78001295224bb2e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pode_.ScanView.handleScannedTable(Pode_.ParsedTable) async -&gt; ()"
+                  moduleName = "Pode?.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gabrielgardini/Documents/code/Pode%3F/Pode%3F/ScanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "196"
+                  endingLineNumber = "196">
+               </Location>
+               <Location
+                  uuid = "CA903D24-6DDD-4977-BB40-4D388A45738D - e78001295224bb2e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pode_.ScanView.handleScannedTable(Pode_.ParsedTable) async -&gt; ()"
+                  moduleName = "Pode?.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gabrielgardini/Documents/code/Pode%3F/Pode%3F/ScanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "196"
+                  endingLineNumber = "196">
+               </Location>
+               <Location
+                  uuid = "CA903D24-6DDD-4977-BB40-4D388A45738D - 890a422e6c1e3f2a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for Pode_.ScanView.handleScannedTable(Pode_.ParsedTable) async -&gt; ()"
+                  moduleName = "Pode?.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gabrielgardini/Documents/code/Pode%3F/Pode%3F/ScanView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "196"
+                  endingLineNumber = "196">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

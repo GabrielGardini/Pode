@@ -11,8 +11,8 @@ final class Child {
     var age: Int {
         let calendar = Calendar.current
         let now = Date()
-        let components = calendar.dateComponents([.year], from: birthDate, to: now)
-        return max(0, components.year ?? 0)
+        let components = calendar.dateComponents([.month], from: birthDate, to: now)
+        return max(0, components.month ?? 0)
     }
 
     init(name: String, birthDate: Date, allergies: [String], createdAt: Date = .now) {

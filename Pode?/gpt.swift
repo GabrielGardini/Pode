@@ -15,20 +15,56 @@ struct OpenAIResponse: Codable {
 }
 
 func requisicao(description: String, table: String, children: [Child]) async -> String {
-//    let url = URL(string: "https://api.openai.com/v1/responses")!
+    let url = URL(string: "https://api.openai.com/v1/responses")!
     
-    print(SecretManager.apiKey)
+    // Monta string detalhada das crianças: nome, idade e alergias
+    let formattedChildren: String = {
+        guard !children.isEmpty else { return "[]" }
+        var parts: [String] = []
+        for child in children {
+            // Assumindo que `Child` tenha `name: String?`, `ageMonths: Int?`, `ageYears: Int?`, `allergies: [String]?`
+            let name: String = {
+                // Handle both optional and non-optional name gracefully
+                let raw = (child.name as String?) ?? ""
+                let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+                return trimmed.isEmpty ? "Sem nome" : trimmed
+            }()
+
+            let ageMonths: String? = {
+                // Support both optional and non-optional Int for age
+                if let ageOpt = (child.age as Int?) {
+                    return "\(ageOpt) meses"
+                }
+                return nil
+            }()
+
+            let allergiesList: String = {
+                // Support both optional and non-optional arrays for allergies
+                let rawAllergies = (child.allergies as [String]?) ?? []
+                let cleaned = rawAllergies
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .filter { !$0.isEmpty }
+                if !cleaned.isEmpty {
+                    return cleaned.joined(separator: ", ")
+                }
+                return "nenhuma conhecida"
+            }()
+
+            let entry = "{ name: \"\(name)\", age: \"\(ageMonths ?? "desconhecida")\", allergies: \"\(allergiesList)\" }"
+            parts.append(entry)
+        }
+        return "[\n  " + parts.joined(separator: ",\n  ") + "\n]"
+    }()
     
     
-//    var request = URLRequest(url: url)
-//    request.httpMethod = "POST"
     
-//    if let path = Bundle.main.path(forResource: "Secrets", ofType: "plist"),
-//       let dict = NSDictionary(contentsOfFile: path),
-//       let apiKey = dict["SenhaChat"] as? String {
-//        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-//    }
-//    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    
+    if let apiKey = SecretManager.apiKey as? String {
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+    }
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 //    
     let system_prompt = """
     Você é um especialista em nutrição infantil.
@@ -154,7 +190,7 @@ func requisicao(description: String, table: String, children: [Child]) async -> 
     {{\(table)}}
 
     Crianças:
-    {{\(children)}}
+    {{\(formattedChildren)}}
 
     ---
 
@@ -188,7 +224,6 @@ func requisicao(description: String, table: String, children: [Child]) async -> 
         {
           "name": "string",
           "age_months": number | null,
-          "age_years": number | null,
           "recommendation": {
             "recommended": true | false,
             "short_text": "mensagem curta"
@@ -230,21 +265,19 @@ func requisicao(description: String, table: String, children: [Child]) async -> 
         "input": system_prompt
     ]
     
-//    request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody)
-    print(system_prompt)
-//    do {
-//        let (data, _) = try await URLSession.shared.data(for: request)
-//        let decoded = try JSONDecoder().decode(OpenAIResponse.self, from: data)
-//        if let text = decoded.output.first?.content.first?.text {
-//            print("Texto da resposta: \(text)")
-//            return text
-//        } else {
-//            return "Texto não encontrado"
-//        }
-//    } catch {
-//        return "Erro ao decodificar JSON: \(error)"
-//    }
-    return "apagar"
+    request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody)
+    do {
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let decoded = try JSONDecoder().decode(OpenAIResponse.self, from: data)
+        if let text = decoded.output.first?.content.first?.text {
+            print("Texto da resposta: \(text)")
+            return text
+            
+        } else {
+            return "Texto não encontrado"
+        }
+    } catch {
+        return "Erro ao decodificar JSON: \(error)"
+    }
 }
-
 
