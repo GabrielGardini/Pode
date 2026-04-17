@@ -16,6 +16,10 @@ struct OpenAIResponse: Codable {
 
 func requisicao(description: String, table: String, children: [Child]) async -> String {
 //    let url = URL(string: "https://api.openai.com/v1/responses")!
+    
+    print(SecretManager.apiKey)
+    
+    
 //    var request = URLRequest(url: url)
 //    request.httpMethod = "POST"
     
