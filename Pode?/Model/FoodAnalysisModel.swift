@@ -40,7 +40,7 @@ struct Calories: Codable {
 }
 
 struct Highlight: Codable, Identifiable {
-    let id = UUID()
+    var id = UUID()
     let type: String
     let title: String
 }
@@ -97,6 +97,6 @@ struct Frequency: Codable {
 }
 
 struct Alternative: Codable, Identifiable {
-    let id = UUID()
+    var id = UUID()
     let name: String
 }

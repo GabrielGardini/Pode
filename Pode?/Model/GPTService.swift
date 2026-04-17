@@ -14,7 +14,7 @@ struct OpenAIResponse: Codable {
     let output: [OutputItem]
 }
 
-func requisicao(description: String, table: String, children: [Child]) async -> String {
+func request(description: String, table: String, children: [Child]) async -> String {
     let url = URL(string: "https://api.openai.com/v1/responses")!
     
     // Monta string detalhada das crianças: nome, idade e alergias
@@ -65,7 +65,7 @@ func requisicao(description: String, table: String, children: [Child]) async -> 
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
     }
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//    
+
     let system_prompt = """
     Você é um especialista em nutrição infantil.
 
@@ -244,7 +244,8 @@ func requisicao(description: String, table: String, children: [Child]) async -> 
 
     ### Regras finais
 
-    - Apenas JSON
+    - Apenas o JSON, não envie nenhuma outra palavra fora do objeto
+    - NÃO ESCREVER A PALAVRA JSON ANTES DO OBJETO
     - Não inventar dados (use null)
     - Máx:
       - 3 highlights

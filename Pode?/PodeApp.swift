@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct Pode_App: App {
+struct PodeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()       }

@@ -78,7 +78,9 @@ struct ScanView: View {
                         await handleScannedTable(parsed)
                         
                         await MainActor.run {
-                            showFoodAnalysis = true
+                            if (((result?.contains("Erro")) == false)){
+                                showFoodAnalysis = true
+                            }
                         }
                     } catch {
                         print("Erro: \(error)")
@@ -183,16 +185,7 @@ struct ScanView: View {
     /// Called after scanning when the full table is available. It can trigger further processing.
     func handleScannedTable(_ table: ParsedTable) async {
         do {
-            // Fetch children from SwiftData database
-            let descriptor = FetchDescriptor<Child>()
-            let fetchedChildren = try modelContext.fetch(descriptor)
-            
-            self.result = await requisicao(description: "cheetos", table: formatTable(table), children: fetchedChildren)
-            // Optionally retain input for next view if needed
-            await MainActor.run {
-                analysisInput = formatTable(table)
-            }
-            
+            result = await request(description: "cheetos", table: formatTable(table), children: children)                
         } catch {
             // Handle fetch errors appropriately (log or show UI as needed)
             print("Failed to fetch children: \(error)")
