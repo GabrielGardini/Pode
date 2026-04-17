@@ -27,11 +27,21 @@ struct ScanView: View {
     
     @State private var scannedText: String = ""
     @State private var presentScanner: Bool = false
+    @State private var formattedTable: String = ""
 
     var body: some View {
         NavigationStack {
             VStack {
                 Text("Scaneie a tabela nutricional!")
+                
+                if !formattedTable.isEmpty {
+                    ScrollView {
+                        Text(formattedTable)
+                            .font(.system(.body, design: .monospaced))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 8)
+                    }
+                }
             }
             .navigationTitle("Scan")
             .toolbar {
@@ -51,7 +61,9 @@ struct ScanView: View {
                         let table = try await extractTable(from: imageData)
                         print("Tabela detectada:")
                         let parsed = parseTableGeneric(table)
-                        prettyPrint(parsed)
+                        let formatted = formatTable(parsed)
+                        formattedTable = formatted
+                        await handleScannedTable(parsed)
                     } catch {
                         print("Erro: \(error)")
                     }
@@ -115,13 +127,10 @@ struct ScanView: View {
         return ParsedTable(headers: headers, rows: dataRows)
     }
     
-    func prettyPrint(_ table: ParsedTable) {
-        
+    func formatTable(_ table: ParsedTable) -> String {
         let allRows = [table.headers ?? []] + table.rows
-        
-        // Calcula largura máxima de cada coluna
+
         var columnWidths: [Int] = []
-        
         for row in allRows {
             for (i, cell) in row.enumerated() {
                 if i >= columnWidths.count {
@@ -131,27 +140,49 @@ struct ScanView: View {
                 }
             }
         }
-        
+
         func formatRow(_ row: [String]) -> String {
             return row.enumerated().map { index, cell in
                 let padding = columnWidths[index] - cell.count
                 return cell + String(repeating: " ", count: padding)
             }.joined(separator: " | ")
         }
-        
-        // Header
+
+        var lines: [String] = []
+
         if let headers = table.headers {
-            print(formatRow(headers))
-            
-            // Linha separadora
+            lines.append(formatRow(headers))
             let separator = columnWidths.map { String(repeating: "-", count: $0) }
                 .joined(separator: "-+-")
-            print(separator)
+            lines.append(separator)
         }
-        
-        // Linhas
+
         for row in table.rows {
-            print(formatRow(row))
+            lines.append(formatRow(row))
+        }
+
+        return lines.joined(separator: "\n")
+    }
+    
+    /// Called after scanning when the full table is available. It can trigger further processing.
+    func handleScannedTable(_ table: ParsedTable) async {
+        do {
+            // Fetch children from SwiftData database
+            let descriptor = FetchDescriptor<Child>()
+            let fetchedChildren = try modelContext.fetch(descriptor)
+            
+            // Call your request with the fetched children
+            _ = await requisicao(description: "kitkat", table: formatTable(table), children: fetchedChildren)
+        } catch {
+            // Handle fetch errors appropriately (log or show UI as needed)
+            print("Failed to fetch children: \(error)")
         }
     }
+
+    
+    func prettyPrint(_ table: ParsedTable) {
+        let output = formatTable(table)
+        print(output)
+    }
 }
+
