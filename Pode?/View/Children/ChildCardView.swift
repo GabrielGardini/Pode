@@ -47,8 +47,8 @@ struct ChildCardView: View {
             
             Spacer()
         }
-//        .background(.ultraThickMaterial)
-//        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .background(.ultraThickMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 32))
         .scaleEffect(isPressed ? 0.97 : 1)
         .animation(.easeInOut(duration: 0.15), value: isPressed)
         .onLongPressGesture(minimumDuration: 0, pressing: { pressing in
@@ -73,13 +73,12 @@ struct ChildCardView: View {
 extension ChildCardView {
     
     func ageDisplay() -> String {
-        let months = monthsBetween(child.birthDate, Date())
         
-        if months < 24 {
-            return months == 1 ? "1 mês" : "\(months) meses"
+        if child.age < 24 {
+            return child.age == 1 ? "1 mês" : "\(child.age) meses"
         } else {
-            let years = child.age
-            return years == 1 ? "1 ano" : "\(years) anos"
+            let years = child.age / 12
+            return "\(years) anos"
         }
     }
     

@@ -40,7 +40,7 @@ struct Calories: Codable {
 }
 
 struct Highlight: Codable, Identifiable {
-    var id = UUID()
+    var id: String { title }
     let type: String
     let title: String
 }
@@ -63,7 +63,7 @@ struct InferredFoodType: Codable {
 }
 
 struct FoodAnalysisChild: Codable, Identifiable {
-    let id = UUID()
+    var id: String { name }
     let name: String
     let ageMonths: Int
     let recommendation: Recommendation
@@ -97,6 +97,6 @@ struct Frequency: Codable {
 }
 
 struct Alternative: Codable, Identifiable {
-    var id = UUID()
+    var id: String { name }
     let name: String
 }

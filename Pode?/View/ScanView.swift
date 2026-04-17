@@ -23,46 +23,43 @@ struct ParsedTable {
 
 struct ScanView: View {
     @Query var children: [Child]
-    @Environment(\.modelContext) var modelContext
     
-    @State private var scannedText: String = ""
-    @State private var presentScanner: Bool = false
-    @State private var formattedTable: String = ""
-
-    @State private var showFoodAnalysis: Bool = false
-    @State private var analysisInput: String? = nil
+    @StateObject private var viewModel = FoodAnalysisViewModel(
+        service: OpenAIService(apiKey: SecretManager.apiKey)
+    )
     
-    @State private var result: String? = nil
+    @State private var presentScanner = false
+    @State private var formattedTable = ""
+    @State private var showFoodAnalysis = false
 
     var body: some View {
         NavigationStack {
             VStack {
-                NavigationLink(isActive: $showFoodAnalysis) {
-                    FoodAnalysisView(json: result)
-                } label: {
-                    EmptyView()
+                Text("Escaneie a tabela nutricional!")
+
+                if case .loading = viewModel.state {
+                    ProgressView("Analisando...")
                 }
-                .hidden()
-                
-                Text("Scaneie a tabela nutricional!")
-                
-                if !formattedTable.isEmpty {
-                    ScrollView {
-                        Text(formattedTable)
-                            .font(.system(.body, design: .monospaced))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 8)
-                    }
+
+                if case .failed(let error) = viewModel.state {
+                    Text(error)
+                        .foregroundColor(.red)
                 }
+            }
+            .onChange(of: viewModel.isLoaded) { oldValue, newValue in
+                if newValue {
+                    showFoodAnalysis = true
+                }
+            }
+            .navigationDestination(isPresented: $showFoodAnalysis) {
+                destinationView()
             }
             .navigationTitle("Scan")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        presentScanner = true
-                    } label: {
-                        Label("Ler Tabela", systemImage: "camera.viewfinder")
-                    }
+                Button {
+                    presentScanner = true
+                } label: {
+                    Label("Ler Tabela", systemImage: "camera.viewfinder")
                 }
             }
         }
@@ -70,23 +67,40 @@ struct ScanView: View {
             CameraView { imageData in
                 Task {
                     do {
-                        let table = try await extractTable(from: imageData)
-                        print("Tabela detectada:")
-                        let parsed = parseTableGeneric(table)
-                        let formatted = formatTable(parsed)
-                        formattedTable = formatted
-                        await handleScannedTable(parsed)
+                        showFoodAnalysis = false
                         
-                        await MainActor.run {
-                            if (((result?.contains("Erro")) == false)){
-                                showFoodAnalysis = true
-                            }
-                        }
+                        let table = try await extractTable(from: imageData)
+                        let parsed = parseTableGeneric(table)
+                        
+                        formattedTable = formatTable(parsed)
+                        
+                        handleScannedTable(parsed)
+                        
                     } catch {
-                        print("Erro: \(error)")
+                        print(error)
                     }
                 }
             }
+        }
+    }
+    
+    func handleScannedTable(_ table: ParsedTable) {
+        viewModel.analyze(
+            description: "cookies",
+            table: formatTable(table),
+            children: children
+        )
+    }
+    
+    @ViewBuilder
+    private func destinationView() -> some View {
+        switch viewModel.state {
+        case .loaded(let response):
+            FoodAnalysisView(response: response)
+        case .failed(let error):
+            Text(error)
+        default:
+            ProgressView()
         }
     }
     
@@ -180,22 +194,6 @@ struct ScanView: View {
         }
 
         return lines.joined(separator: "\n")
-    }
-    
-    /// Called after scanning when the full table is available. It can trigger further processing.
-    func handleScannedTable(_ table: ParsedTable) async {
-        do {
-            result = await request(description: "cheetos", table: formatTable(table), children: children)                
-        } catch {
-            // Handle fetch errors appropriately (log or show UI as needed)
-            print("Failed to fetch children: \(error)")
-        }
-    }
-
-    
-    func prettyPrint(_ table: ParsedTable) {
-        let output = formatTable(table)
-        print(output)
     }
 }
 
