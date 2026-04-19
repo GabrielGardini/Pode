@@ -12,38 +12,39 @@ struct DescriptionView: View {
     @Binding var result: ScanResult
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 32) {
             
             Image(systemName: "camera.viewfinder")
-                .font(.system(size: 64))
+                .font(.system(size: 72))
+                .foregroundStyle(Color.accentColor)
             
             VStack(alignment: .leading) {
                 Text("Adicione uma descrição")
                     .font(.title2)
                     .fontWeight(.semibold)
-                Text("Você pode colocar o nome do alimento ou especificar sobre o que ele é.")
-                    .font(.body)
+                Text("Informe o nome do alimento ou descreva do que se trata.")
+                    .font(.title2)
                     .foregroundColor(.gray)
                 
                 TextField("Descrição", text: $result.description)
                     .padding()
-                    .background(.secondary)
+                    .background(.regularMaterial)
+                    .cornerRadius(32)
             }
             Spacer()
             
             Button {
                 print("Continuar!!!!!!!!")
             } label: {
-                Text("Continue")
+                Text("Analisar")
                     .font(.headline)
-                    .foregroundColor(result.description.isEmpty ? .secondary : .white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(result.description.isEmpty ? .primary : Color.accentColor)
-                    .cornerRadius(32)
+                    .padding(8)
             }
+            .buttonStyle(.glassProminent)
+            .buttonSizing(.flexible)
             .disabled(result.description.isEmpty)
+            
         }
-        .padding()
+        .padding(.horizontal, 32)
     }
 }

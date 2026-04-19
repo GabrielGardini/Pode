@@ -37,6 +37,8 @@ struct PhotoPreviewView: View {
                     }
                 }
             }
+            .navigationTitle("Preview")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
