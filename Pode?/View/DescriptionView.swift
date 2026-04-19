@@ -10,6 +10,9 @@ import SwiftUI
 struct DescriptionView: View {
     
     @Binding var result: ScanResult
+    let onComplete: () -> Void
+    
+    @State private var descriptionText: String = ""
     
     var body: some View {
         VStack(spacing: 32) {
@@ -22,29 +25,28 @@ struct DescriptionView: View {
                 Text("Adicione uma descrição")
                     .font(.title2)
                     .fontWeight(.semibold)
+                
                 Text("Informe o nome do alimento ou descreva do que se trata.")
-                    .font(.title2)
                     .foregroundColor(.gray)
                 
-                TextField("Descrição", text: $result.description)
+                TextField("Descrição", text: $descriptionText)
                     .padding()
                     .background(.regularMaterial)
-                    .cornerRadius(32)
+                    .cornerRadius(16)
             }
+            
             Spacer()
             
             Button {
-                print("Continuar!!!!!!!!")
+                result.description = descriptionText
+                onComplete()
             } label: {
                 Text("Analisar")
-                    .font(.headline)
-                    .padding(8)
+                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(.glassProminent)
-            .buttonSizing(.flexible)
-            .disabled(result.description.isEmpty)
-            
+            .disabled(descriptionText.isEmpty)
         }
-        .padding(.horizontal, 32)
+        .padding(32)
     }
 }
