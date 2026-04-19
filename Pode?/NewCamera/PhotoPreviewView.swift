@@ -6,38 +6,37 @@
 //
 
 import SwiftUI
-import AVFoundation
 
 struct PhotoPreviewView: View {
-    
-    let item: IdentifiableImage
-    let onDismiss: () -> Void
+            
+    @Binding var result: ScanResult?
+    @Binding var showPreview: Bool
+    @Binding var goToDescription: Bool
     
     var body: some View {
-        VStack {
-            HStack {
-                Button("Retake") {
-                    onDismiss()
+        NavigationStack {
+            VStack {
+                if let result {
+                    Image(uiImage: result.image)
+                        .resizable()
+                        .scaledToFit()
                 }
-                .padding()
-                
-                Spacer()
-                
-                Button("Save") {
-                    print("Aqui será o próximo passo")
-                    onDismiss()
-                }
-                .padding()
-                
             }
-            .background(.ultraThinMaterial)
-            
-            Image(uiImage: item.image)
-                .resizable()
-                .scaledToFit()
-            
-            Spacer()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        result = nil
+                        showPreview = false
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(role: .confirm) {
+                        showPreview = false
+                        goToDescription = true
+                    }
+                }
+            }
         }
     }
-    
 }

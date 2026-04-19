@@ -126,7 +126,11 @@ class CameraManager: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     }
 }
 
-struct IdentifiableImage: Identifiable {
+struct IdentifiableImage: Identifiable, Equatable {
     var id = UUID()
     let image: UIImage
+    
+    static func == (lhs: IdentifiableImage, rhs: IdentifiableImage) -> Bool {
+        lhs.id == rhs.id
+    }
 }

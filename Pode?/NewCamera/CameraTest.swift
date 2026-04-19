@@ -13,6 +13,8 @@ struct CameraTest: View {
     
     @StateObject private var cameraManager = CameraManager()
     
+    let onCapture: (UIImage) -> Void
+    
     var body: some View {
         ZStack {
             if cameraManager.authorizationStatus == .authorized {
@@ -66,15 +68,16 @@ struct CameraTest: View {
                 }
                 .padding(.bottom, 40)
             }
-            .sheet(item: $cameraManager.capturedImage) { item in
-                PhotoPreviewView(item: item, onDismiss: {
-                    cameraManager.capturedImage = nil
-                })
-            }
-            
         }
         .onAppear {
             cameraManager.checkAuthorization()
+        }
+        .onChange(of: cameraManager.capturedImage) { item in
+            if let image = item?.image {
+                onCapture(image)
+                
+                cameraManager.capturedImage = nil
+            }
         }
         .padding()
     }

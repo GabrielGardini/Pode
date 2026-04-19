@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            CameraTest()
+            ScanView()
                 .tabItem {
                     Label("Scan", systemImage: "camera.viewfinder")
                 }

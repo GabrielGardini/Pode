@@ -9,42 +9,41 @@ import SwiftUI
 
 struct DescriptionView: View {
     
-    @Binding var description: String
+    @Binding var result: ScanResult
     
     var body: some View {
         VStack(spacing: 16) {
             
             Image(systemName: "camera.viewfinder")
                 .font(.system(size: 64))
-
-            VStack {
+            
+            VStack(alignment: .leading) {
                 Text("Adicione uma descrição")
                     .font(.title2)
                     .fontWeight(.semibold)
+                Text("Você pode colocar o nome do alimento ou especificar sobre o que ele é.")
+                    .font(.body)
+                    .foregroundColor(.gray)
                 
-                TextEditor(text: $description)
-                    .padding(8)
-                    .background(Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                TextField("Descrição", text: $result.description)
+                    .padding()
+                    .background(.secondary)
             }
+            Spacer()
+            
+            Button {
+                print("Continuar!!!!!!!!")
+            } label: {
+                Text("Continue")
+                    .font(.headline)
+                    .foregroundColor(result.description.isEmpty ? .secondary : .white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(result.description.isEmpty ? .primary : Color.accentColor)
+                    .cornerRadius(32)
+            }
+            .disabled(result.description.isEmpty)
         }
         .padding()
-        .safeAreaInset(edge: .bottom) {
-            VStack {
-                Button(action: {
-                    // ação
-                }) {
-                    Text("Continuar")
-                        .font(.headline)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-                .disabled(description.isEmpty)
-            }
-            .padding(.horizontal)
-            .padding(.top, 8)
-            .padding(.bottom, 12)
-            .background(.ultraThinMaterial)
-        }
     }
 }
