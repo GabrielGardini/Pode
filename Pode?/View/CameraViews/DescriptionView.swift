@@ -32,7 +32,7 @@ struct DescriptionView: View {
                 TextField("Descrição", text: $descriptionText)
                     .padding()
                     .background(.regularMaterial)
-                    .cornerRadius(16)
+                    .cornerRadius(32)
             }
             
             Spacer()
@@ -42,9 +42,10 @@ struct DescriptionView: View {
                 onComplete()
             } label: {
                 Text("Analisar")
-                    .frame(maxWidth: .infinity)
+                    .padding(8)
             }
             .buttonStyle(.glassProminent)
+            .buttonSizing(.flexible)
             .disabled(descriptionText.isEmpty)
         }
         .padding(32)

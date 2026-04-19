@@ -23,15 +23,18 @@ struct PhotoPreviewView: View {
         }
         .navigationTitle("Preview")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Refazer") {
+                Button {
                     onRetake()
+                } label: {
+                    Image(systemName: "arrow.trianglehead.clockwise")
                 }
             }
             
             ToolbarItem(placement: .confirmationAction) {
-                Button("Next") {
+                Button(role: .confirm) {
                     onNext()
                 }
             }

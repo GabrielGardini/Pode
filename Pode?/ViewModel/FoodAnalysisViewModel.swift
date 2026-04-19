@@ -31,6 +31,7 @@ final class FoodAnalysisViewModel: ObservableObject {
         table: String,
         children: [Child]
     ) {
+        print("Analisando a comida")
         state = .loading
         
         Task {
