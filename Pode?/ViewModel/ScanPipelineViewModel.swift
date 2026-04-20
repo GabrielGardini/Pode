@@ -10,6 +10,8 @@ import Combine
 
 enum AppError: Error {
     case invalidImage
+    case noTable
+    case noDocument
     case network
     case api(String)
     case decoding
@@ -19,6 +21,10 @@ enum AppError: Error {
         switch self {
         case .invalidImage:
             return "Imagem inválida."
+        case .noDocument:
+            return "Nenhum documento detectado."
+        case .noTable:
+            return "Nenhuma tabela encontrada."
         case .network:
             return "Erro de conexão."
         case .api(let msg):
@@ -51,8 +57,6 @@ final class ScanPipelineViewModel: ObservableObject {
     private let tableService: TableExtractionService
     private let aiService: OpenAIService
     
-    // MARK: - Init
-    
     init(
         tableService: TableExtractionService = TableExtractionService(),
         aiService: OpenAIService
@@ -61,13 +65,9 @@ final class ScanPipelineViewModel: ObservableObject {
         self.aiService = aiService
     }
     
-    // MARK: - Logging
-    
     private func log(_ message: String) {
         print("📊 [ScanPipeline] \(message)")
     }
-    
-    // MARK: - Pipeline
     
     func process(result: ScanResult, children: [Child]) {
         guard !isProcessing else { return }
@@ -91,8 +91,8 @@ final class ScanPipelineViewModel: ObservableObject {
                 // 2. Extrair tabela
                 let parsedTable = try await tableService
                     .extractAndParseTable(from: data)
-                
-                log("Tabela extraída")
+
+                log("Tabela extraída com \(parsedTable.rows.count) linhas")
                 
                 // 3. Montar prompt
                 let formattedChildren = ChildFormatter.format(children)
@@ -118,8 +118,11 @@ final class ScanPipelineViewModel: ObservableObject {
                 state = .success(decoded)
                 
             } catch {
+                log("Erro bruto: \(error)")
+                
                 let mapped = mapError(error)
-                log("Erro: \(mapped)")
+                log("Erro mapeado: \(mapped)")
+                
                 state = .error(mapped)
             }
         }
@@ -156,21 +159,37 @@ extension ScanPipelineViewModel {
     
     private func mapError(_ error: Error) -> String {
         
+        // Vision (OCR)
+        if let visionError = error as? VisionError {
+            switch visionError {
+            case .noDocument:
+                return AppError.noDocument.message
+            case .noTable:
+                return AppError.noTable.message
+            }
+        }
+        
+        // API
         if let apiError = error as? APIError {
             switch apiError {
             case .invalidURL:
                 return "Erro interno (URL)"
+                
             case .invalidResponse:
                 return "Resposta inválida da API"
+                
             case .decodingError:
                 return "Erro ao interpretar resposta da IA"
+                
             case .apiError(let message):
                 return message
+                
             case .network:
-                return "Erro de conexão"
+                return AppError.network.message
             }
         }
         
+        // AppError direto
         if let appError = error as? AppError {
             return appError.message
         }
