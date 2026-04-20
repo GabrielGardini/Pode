@@ -8,7 +8,7 @@
 import Foundation
 import Vision
 
-enum AppError: Error, LocalizedError {
+enum VisionError: Error, LocalizedError {
     case noDocument
     case noTable
     
@@ -76,11 +76,11 @@ struct TableExtractionService {
         let observations = try await request.perform(on: image)
         
         guard let document = observations.first?.document else {
-            throw AppError.noDocument
+            throw VisionError.noDocument
         }
         
         guard let table = document.tables.first else {
-            throw AppError.noTable
+            throw VisionError.noTable
         }
         
         return table

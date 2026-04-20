@@ -8,24 +8,6 @@
 import SwiftUI
 import SwiftData
 
-struct ScanResult: Identifiable, Equatable {
-    var id = UUID()
-    var image: UIImage?
-    var description: String
-    
-    static func == (lhs: ScanResult, rhs: ScanResult) -> Bool {
-        lhs.description == rhs.description &&
-        lhs.image == rhs.image
-    }
-}
-
-enum ScanFlowState {
-    case idle
-    case processing
-    case success(FoodAnalysisResponse)
-    case error(String)
-}
-
 struct ScanView: View {
     
     @Query var children: [Child]
@@ -33,23 +15,19 @@ struct ScanView: View {
     @State private var result = ScanResult(image: nil, description: "")
     @State private var presentScanner = false
     
-    @State private var isProcessing = false
-    @State private var flowState: ScanFlowState = .idle
-    
-    @StateObject private var tableScannerViewModel = TableScannerViewModel()
-    @StateObject private var foodAnalysisViewModel = FoodAnalysisViewModel(
-        service: OpenAIService(apiKey: SecretManager.apiKey)
+    @StateObject private var pipeline = ScanPipelineViewModel(
+        aiService: OpenAIService(apiKey: SecretManager.apiKey)
     )
     
     // MARK: - Derived State
     
     private var isLoading: Bool {
-        if case .processing = flowState { return true }
+        if case .processing = pipeline.state { return true }
         return false
     }
     
     private var isShowingResult: Bool {
-        if case .success = flowState { return true }
+        if case .success = pipeline.state { return true }
         return false
     }
     
@@ -57,12 +35,14 @@ struct ScanView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 16) {
+                
+                // 🔄 LOADING
                 if isLoading {
                     ProgressView("Processando...")
                 }
                 
-                // 📸 PREVIEW DO RESULTADO
+                // 📸 PREVIEW
                 if let image = result.image {
                     Image(uiImage: image)
                         .resizable()
@@ -77,102 +57,93 @@ struct ScanView: View {
                         .font(.headline)
                 }
             }
+            .padding()
             .navigationTitle("Scan")
+            
+            // MARK: - Toolbar
+            
             .toolbar {
                 Button {
                     presentScanner = true
                 } label: {
                     Label("Ler Tabela", systemImage: "camera.viewfinder")
                 }
-                .disabled(isProcessing)
+                .disabled(isLoading)
             }
+            
+            // MARK: - Navigation
+            
             .navigationDestination(
                 isPresented: Binding(
                     get: { isShowingResult },
-                    set: { if !$0 { flowState = .idle } }
+                    set: { if !$0 { pipeline.state = .idle } }
                 )
             ) {
                 destinationView()
             }
         }
+        
+        // MARK: - Scanner
+        
         .sheet(isPresented: $presentScanner) {
             ScannerFlowView(
                 result: $result,
                 onFinish: handleScannerFinish
             )
         }
+        
+        // MARK: - Error
+        
         .alert(
             "Erro",
             isPresented: Binding(
                 get: {
-                    if case .error = flowState { return true }
+                    if case .error = pipeline.state { return true }
                     return false
                 },
-                set: { _ in flowState = .idle }
+                set: { _ in pipeline.state = .idle }
             )
         ) {
             Button("OK", role: .cancel) { }
         } message: {
-            if case .error(let message) = flowState {
+            if case .error(let message) = pipeline.state {
                 Text(message)
             }
         }
     }
 }
 
+// MARK: - Actions
+
 extension ScanView {
     
-    // MARK: - Flow Entry
-    
     func handleScannerFinish(_ final: ScanResult) {
-        print("Processando o resultado")
         result = final
         presentScanner = false
-        processFinalResult(final)
-    }
-    
-    // MARK: - Pipeline
-    
-    func processFinalResult(_ final: ScanResult) {
-        guard !isProcessing else { return }
         
-        isProcessing = true
-        flowState = .processing
-        
-        Task {
-            defer { isProcessing = false }
-            
-            guard let uiImage = final.image,
-                  let imageData = uiImage.jpegData(compressionQuality: 1.0)
-            else {
-                flowState = .error("Imagem inválida.")
-                return
-            }
-            
-            await tableScannerViewModel.processImage(imageData)
-            
-            if tableScannerViewModel.showError {
-                flowState = .error(
-                    tableScannerViewModel.errorMessage ?? "Erro ao extrair tabela."
-                )
-                return
-            }
-            
-            foodAnalysisViewModel.analyze(description: result.description,
-                                          table: tableScannerViewModel.extractedText,
-                                          children: children)
-        }
+        pipeline.process(
+            result: final,
+            children: children
+        )
     }
 }
+
+// MARK: - Navigation Destination
 
 extension ScanView {
     
     @ViewBuilder
     func destinationView() -> some View {
-        if case .success(let response) = flowState {
+        switch pipeline.state {
+            
+        case .success(let response):
             FoodAnalysisView(response: response)
-        } else {
+            
+        case .processing:
             ProgressView()
+            
+        default:
+            EmptyView()
         }
     }
 }
