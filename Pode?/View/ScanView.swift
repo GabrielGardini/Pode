@@ -82,6 +82,7 @@ struct ScanView: View {
                 result: $result,
                 onFinish: handleScannerFinish
             )
+            .presentationDetents([.large])
         }
         
         // Erros

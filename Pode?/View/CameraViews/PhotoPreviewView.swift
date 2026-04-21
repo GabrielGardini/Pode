@@ -18,7 +18,13 @@ struct PhotoPreviewView: View {
             if let image = result.image {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .shadow(color: .black.opacity(0.08), radius: 12, y: 6)
+                    .padding(.horizontal, 16)
+                    .transition(.opacity.combined(with: .scale))
+            } else {
+                ContentUnavailableView("Sem imagem", systemImage: "photo")
             }
         }
         .navigationTitle("Preview")
@@ -29,7 +35,7 @@ struct PhotoPreviewView: View {
                 Button {
                     onRetake()
                 } label: {
-                    Image(systemName: "arrow.trianglehead.clockwise")
+                    Image(systemName: "arrow.triangle.2.circlepath.camera")
                 }
             }
             

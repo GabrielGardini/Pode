@@ -13,42 +13,62 @@ struct DescriptionView: View {
     let onComplete: () -> Void
     
     @State private var descriptionText: String = ""
+    @FocusState private var isFocused: Bool
     
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 24) {
+            
+            Spacer(minLength: 0)
             
             Image(systemName: "camera.viewfinder")
-                .font(.system(size: 72))
+                .font(.system(size: 56))
                 .foregroundStyle(Color.accentColor)
+                .padding(.bottom, 8)
             
-            VStack(alignment: .leading) {
-                Text("Adicione uma descrição")
+            VStack(spacing: 8) {
+                Text("Descreva o alimento")
                     .font(.title2)
                     .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
                 
-                Text("Informe o nome do alimento ou descreva do que se trata.")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-                
-                TextField("Descrição", text: $descriptionText)
-                    .padding()
-                    .background(.regularMaterial)
-                    .cornerRadius(32)
+                Text("Informe o nome ou descreva do que se trata.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
+            .padding(.horizontal, 24)
             
-            Spacer()
+            VStack {
+                TextField("Ex: arroz, feijão e frango grelhado", text: $descriptionText)
+                    .focused($isFocused)
+                    .submitLabel(.done)
+                    .padding(16)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            
+            
+            Spacer(minLength: 0)
             
             Button {
                 result.description = descriptionText
                 onComplete()
             } label: {
-                Text("Analisar")
+                Label("Analisar", systemImage: "sparkles")
                     .padding(8)
             }
             .buttonStyle(.glassProminent)
             .buttonSizing(.flexible)
             .disabled(descriptionText.isEmpty)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
         }
-        .padding(32)
+        .padding(.top, 24)
+        .navigationTitle("Descrição")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            isFocused = true
+        }
     }
 }
