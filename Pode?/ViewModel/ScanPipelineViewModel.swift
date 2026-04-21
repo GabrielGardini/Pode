@@ -57,10 +57,8 @@ final class ScanPipelineViewModel: ObservableObject {
     private let tableService: TableExtractionService
     private let aiService: OpenAIService
     
-    init(
-        tableService: TableExtractionService = TableExtractionService(),
-        aiService: OpenAIService
-    ) {
+    init(tableService: TableExtractionService,
+         aiService: OpenAIService) {
         self.tableService = tableService
         self.aiService = aiService
     }

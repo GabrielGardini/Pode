@@ -16,22 +16,30 @@ struct ChildrenView: View {
     
     @State private var presentAddChild: Bool = false
     @State private var selectedChild: Child? = nil
-        
+    
     var body: some View {
         NavigationStack {
             VStack {
-                List(children) { child in
-                    ChildCardView(
-                        child: child,
-                        viewModel: viewModel,
-                        selectedChild: $selectedChild
+                if children.isEmpty {
+                    ContentUnavailableView(
+                        "Nenhuma criança",
+                        systemImage: "person.2.slash",
+                        description: Text("Adicione uma criança para começar.")
                     )
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                } else {
+                    List(children) { child in
+                        ChildCardView(
+                            child: child,
+                            viewModel: viewModel,
+                            selectedChild: $selectedChild
+                        )
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .background(Color(.systemGroupedBackground))
                 }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(Color(.systemGroupedBackground))
             }
             .navigationTitle("Crianças")
             .toolbar {

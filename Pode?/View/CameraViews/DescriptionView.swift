@@ -27,6 +27,7 @@ struct DescriptionView: View {
                     .fontWeight(.semibold)
                 
                 Text("Informe o nome do alimento ou descreva do que se trata.")
+                    .font(.title2)
                     .foregroundColor(.gray)
                 
                 TextField("Descrição", text: $descriptionText)

@@ -16,10 +16,9 @@ struct ScanView: View {
     @State private var presentScanner = false
     
     @StateObject private var pipeline = ScanPipelineViewModel(
+        tableService: TableExtractionService(),
         aiService: OpenAIService(apiKey: SecretManager.apiKey)
     )
-    
-    // MARK: - Derived State
     
     private var isLoading: Bool {
         if case .processing = pipeline.state { return true }
@@ -30,8 +29,6 @@ struct ScanView: View {
         if case .success = pipeline.state { return true }
         return false
     }
-    
-    // MARK: - View
     
     var body: some View {
         NavigationStack {
@@ -59,9 +56,6 @@ struct ScanView: View {
             }
             .padding()
             .navigationTitle("Scan")
-            
-            // MARK: - Toolbar
-            
             .toolbar {
                 Button {
                     presentScanner = true
@@ -71,8 +65,7 @@ struct ScanView: View {
                 .disabled(isLoading)
             }
             
-            // MARK: - Navigation
-            
+            // Navegação
             .navigationDestination(
                 isPresented: Binding(
                     get: { isShowingResult },
@@ -83,8 +76,7 @@ struct ScanView: View {
             }
         }
         
-        // MARK: - Scanner
-        
+        // Scanner
         .sheet(isPresented: $presentScanner) {
             ScannerFlowView(
                 result: $result,
@@ -92,8 +84,7 @@ struct ScanView: View {
             )
         }
         
-        // MARK: - Error
-        
+        // Erros
         .alert(
             "Erro",
             isPresented: Binding(
@@ -113,8 +104,7 @@ struct ScanView: View {
     }
 }
 
-// MARK: - Actions
-
+// Actions
 extension ScanView {
     
     func handleScannerFinish(_ final: ScanResult) {
@@ -128,8 +118,7 @@ extension ScanView {
     }
 }
 
-// MARK: - Navigation Destination
-
+// Navigation Destination
 extension ScanView {
     
     @ViewBuilder
