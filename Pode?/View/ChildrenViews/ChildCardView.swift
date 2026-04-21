@@ -32,6 +32,7 @@ struct ChildCardView: View {
                 Text(child.name)
                     .font(.title)
                     .fontWeight(.bold)
+                    .lineLimit(2)
                 
                 Text(ageDisplay())
                     .font(.subheadline)
@@ -73,13 +74,24 @@ struct ChildCardView: View {
 extension ChildCardView {
     
     func ageDisplay() -> String {
+        let age = child.age
         
-        if child.age < 24 {
-            return child.age == 1 ? "1 mês" : "\(child.age) meses"
-        } else {
-            let years = child.age / 12
-            return "\(years) anos"
+        if age < 12 {
+            let monthText = age == 1 ? "mês" : "meses"
+            return "\(age) \(monthText)"
         }
+        
+        let years = age / 12
+        let months = age % 12
+        
+        let yearText = years == 1 ? "ano" : "anos"
+        
+        if months == 0 {
+            return "\(years) \(yearText)"
+        }
+        
+        let monthText = months == 1 ? "mês" : "meses"
+        return "\(years) \(yearText) e \(months) \(monthText)"
     }
     
     func monthsBetween(_ from: Date, _ to: Date) -> Int {
