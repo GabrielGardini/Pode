@@ -92,6 +92,8 @@ final class ScanPipelineViewModel: ObservableObject {
 
                 log("Tabela extraída com \(parsedTable.rows.count) linhas")
                 
+                print(parsedTable)
+                
                 // 3. Montar prompt
                 let formattedChildren = ChildFormatter.format(children)
                 
@@ -108,11 +110,13 @@ final class ScanPipelineViewModel: ObservableObject {
                 
                 log("Resposta da IA recebida")
                 
+                print(rawResponse)
+                
                 // 5. Decodificar resposta
                 let decoded = try decodeAIResponse(rawResponse)
                 
                 log("Decoding realizado com sucesso")
-                
+                                
                 state = .success(decoded)
                 
             } catch {
