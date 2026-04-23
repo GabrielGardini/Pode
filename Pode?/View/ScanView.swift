@@ -62,6 +62,7 @@ struct ScanView: View {
                 result: $result,
                 onFinish: handleScannerFinish
             )
+            .presentationDetents([.large])
         }
         .alert(
             "Não foi possível concluir a leitura",

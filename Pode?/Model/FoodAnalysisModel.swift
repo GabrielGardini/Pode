@@ -28,9 +28,9 @@ struct Food: Codable {
 }
 
 struct Calories: Codable {
-    let por100g: Int
-    let porPorcao: Int
-    let porcaoG: Double
+    let por100g: Double?
+    let porPorcao: Double?
+    let porcaoG: Double?
 
     enum CodingKeys: String, CodingKey {
         case por100g = "por_100g"
@@ -66,28 +66,18 @@ struct FoodAnalysisChild: Codable, Identifiable {
     var id: String { name }
     let name: String
     let ageMonths: Int
-    let recommendation: Recommendation
-    let justifications: [String]
-    let frequency: Frequency
-    let alternatives: [Alternative]
+    let classificacaoGeralCrianca: String
+    let justifications: [String]?
+    let frequency: Frequency?
+    let alternatives: [Alternative]?
 
     enum CodingKeys: String, CodingKey {
         case name
         case ageMonths = "age_months"
-        case recommendation
+        case classificacaoGeralCrianca = "classificacao_geral_crianca"
         case justifications
         case frequency
         case alternatives
-    }
-}
-
-struct Recommendation: Codable {
-    let recommended: Bool
-    let shortText: String
-
-    enum CodingKeys: String, CodingKey {
-        case recommended
-        case shortText = "short_text"
     }
 }
 
