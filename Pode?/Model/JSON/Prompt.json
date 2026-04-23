@@ -54,9 +54,11 @@ Regra:
 
 ---
 
-### Derivados (detecção)
-- açúcar: glicose, frutose, sacarose, maltodextrina, xarope
-- leite: lactose, caseína, whey
+### Classificação por processamento
+- in natura
+- minimamente processado
+- processado
+- ultraprocessado
 
 ---
 
@@ -64,16 +66,8 @@ Regra:
 - Seja conservador
 - Considere erros de OCR
 - Não invente dados
-- Use descrição como apoio quando a tabela for incompleta
+- Use sempre a tabela como apoio na análise e use a descrição apenas como um apoio
 - Avalie açúcar, sódio e processamento
-
----
-
-### Classificação por processamento
-- in natura
-- minimamente processado
-- processado
-- ultraprocessado
 
 ---
 
@@ -130,7 +124,7 @@ Crianças:
 {
   "food": {
     "name": "nome ou desconhecido",
-    "summary": "resumo direto",
+    "summary": "resumo curto",
     "classificacao_geral": "Pode! | Evitável | Não pode!",
     "calories": {
       "por_100g": number | null,
@@ -155,10 +149,7 @@ Crianças:
     {
       "name": "string",
       "age_months": number | null,
-      "recommendation": {
-        "recommended": true | false,
-        "short_text": "mensagem curta"
-      },
+      "classificacao_geral_crianca": "Pode! | Evitável | Não pode!",
       "justifications": ["motivos"],
       "frequency": {
         "allowed": true | false,

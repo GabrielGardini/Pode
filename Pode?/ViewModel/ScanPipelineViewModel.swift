@@ -140,11 +140,18 @@ extension ScanPipelineViewModel {
             throw AppError.decoding
         }
         
+        // trabalhar aqui
+//        do {
+//            return try JSONDecoder().decode(FoodAnalysisResponse.self, from: jsonData)
+//        } catch {
+//            log("Erro ao decodificar JSON")
+//            print("JSON bruto:\n\(text)")
+//            throw AppError.decoding
+//        }
         do {
             return try JSONDecoder().decode(FoodAnalysisResponse.self, from: jsonData)
         } catch {
-            log("Erro ao decodificar JSON")
-            print("JSON bruto:\n\(text)")
+            print("❌ Decoding error:", error)
             throw AppError.decoding
         }
     }
