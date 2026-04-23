@@ -10,10 +10,13 @@ import SwiftData
 
 struct ScanView: View {
     
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+    
     @Query var children: [Child]
     
     @State private var result = ScanResult(image: nil, description: "")
     @State private var presentScanner = false
+    @State private var showOnboarding = false
     
     @StateObject private var pipeline = ScanPipelineViewModel(
         tableService: TableExtractionService(),
@@ -32,40 +35,19 @@ struct ScanView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
-                
-                // 🔄 LOADING
-                if isLoading {
-                    ProgressView("Processando...")
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    headerSection
+                    tipsSection
+                    bottomCTA
                 }
-                
-                // 📸 PREVIEW
-                if let image = result.image {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-                
-                // 📝 DESCRIÇÃO
-                if !result.description.isEmpty {
-                    Text(result.description)
-                        .font(.headline)
-                }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 120)
             }
-            .padding()
-            .navigationTitle("Scan")
-            .toolbar {
-                Button {
-                    presentScanner = true
-                } label: {
-                    Label("Ler Tabela", systemImage: "camera.viewfinder")
-                }
-                .disabled(isLoading)
-            }
-            
-            // Navegação
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Escanear")
+            .navigationBarTitleDisplayMode(.large)
             .navigationDestination(
                 isPresented: Binding(
                     get: { isShowingResult },
@@ -75,18 +57,14 @@ struct ScanView: View {
                 destinationView()
             }
         }
-        
-        // Scanner
         .sheet(isPresented: $presentScanner) {
             ScannerFlowView(
                 result: $result,
                 onFinish: handleScannerFinish
             )
         }
-        
-        // Erros
         .alert(
-            "Erro",
+            "Não foi possível concluir a leitura",
             isPresented: Binding(
                 get: {
                     if case .error = pipeline.state { return true }
@@ -101,10 +79,137 @@ struct ScanView: View {
                 Text(message)
             }
         }
+        .onAppear {
+            if !hasCompletedOnboarding {
+                showOnboarding = true
+            }
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView()
+                .interactiveDismissDisabled(true)
+        }
     }
 }
 
-// Actions
+// MARK: - Sections
+private extension ScanView {
+    
+    var headerSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            
+            Text("Fotografe a tabela nutricional ou a lista de ingredientes para verificar se o alimento é adequado para a criança.")
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+        
+    var tipsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Para um resultado melhor")
+                .font(.headline)
+            
+            VStack(alignment: .leading, spacing: 10) {
+                tipItem("Use boa iluminação e evite sombras.")
+                tipItem("Centralize a tabela ou os ingredientes.")
+                tipItem("Mantenha o celular firme por alguns segundos.")
+            }
+        }
+    }
+    
+    var bottomCTA: some View {
+        VStack(spacing: 0) {
+//            Divider()
+//                .overlay(Color(.separator).opacity(0.35))
+            
+            Button {
+                presentScanner = true
+            } label: {
+                Label("Escanear alimento", systemImage: "camera.viewfinder")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .buttonSizing(.flexible)
+
+                
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(isLoading || children.isEmpty)
+            .accessibilityHint(children.isEmpty ? "Adicione uma criança para escanear alimentos." : "")
+            .padding(.horizontal, 20)
+            .buttonSizing(.flexible)
+            .padding(.top, 12)
+//            .padding(.bottom, 10)
+//            .background(.bar)
+            if children.isEmpty {
+                Text("Adicione uma criança para escanear alimentos.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 20)
+            }
+            
+        }
+    }
+    
+    var loadingOverlay: some View {
+        ZStack {
+            Rectangle()
+                .fill(.black.opacity(0.12))
+                .ignoresSafeArea()
+            
+            VStack(spacing: 14) {
+                ProgressView()
+                    .controlSize(.large)
+                
+                Text("Analisando informações…")
+                    .font(.headline)
+                
+                Text("Isso pode levar alguns segundos.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(24)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .padding(32)
+        }
+        .transition(.opacity)
+    }
+    
+    func featureRow(icon: String, title: String, subtitle: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .font(.title3)
+                .frame(width: 28)
+                .foregroundStyle(Color.accentColor)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+    
+    func tipItem(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+                .padding(.top, 1)
+            
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
+// MARK: - Actions
 extension ScanView {
     
     func handleScannerFinish(_ final: ScanResult) {
@@ -118,13 +223,12 @@ extension ScanView {
     }
 }
 
-// Navigation Destination
+// MARK: - Navigation Destination
 extension ScanView {
     
     @ViewBuilder
     func destinationView() -> some View {
         switch pipeline.state {
-            
         case .success(let response):
             FoodAnalysisView(response: response)
             
@@ -136,3 +240,4 @@ extension ScanView {
         }
     }
 }
+
