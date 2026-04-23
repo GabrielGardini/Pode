@@ -3,9 +3,14 @@ import SwiftData
 
 @main
 struct PodeApp: App {
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()       }
+            Group {
+                ContentView()
+            }
+        }
         .modelContainer(for: [Child.self])
     }
 }
