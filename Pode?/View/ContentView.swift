@@ -19,10 +19,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("Crianças", systemImage: "figure.child")
                 }
-//            PermittedFoodView()
-//                .tabItem {
-//                    Label("Alimentos Permitidos", systemImage: "figure.food")
-//                }
+            PermittedFoodView()
+                .tabItem {
+                    Label("Alimentos Permitidos", systemImage: "fork.knife")
+                }
         }
     }
 }
