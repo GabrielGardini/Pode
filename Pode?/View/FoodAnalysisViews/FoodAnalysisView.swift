@@ -32,21 +32,11 @@ struct FoodAnalysisView: View {
     
     let response: FoodAnalysisResponse
     
-    private var footerText: AttributedString {
-        var text = AttributedString("As informações apresentadas não substituem orientações ou instruções médicas. Para mais detalhes, consulte o ")
-
-        var linkText = AttributedString("Guia Alimentar para a População Brasileira")
-        linkText.link = URL(string: "https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf")
-
-        text.append(linkText)
-        return text
-    }
-    
     var body: some View {
         NavigationStack {
             Form {
                 Section(
-                    footer: Text(footerText)
+                    footer: Text("As informações apresentadas não substituem orientações ou instruções médicas. Para mais detalhes, consulte o [Guia Alimentar para a População Brasileira](https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf)")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 ) {
@@ -116,13 +106,14 @@ struct InfoSection<Content: View>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label {
+            
+            HStack {
+                Image(systemName: systemImage)
+                    .font(.body)
+                    .foregroundStyle(Color.accentColor)
+                
                 Text(title)
                     .font(.headline)
-                    .foregroundStyle(.primary)
-            } icon: {
-                Image(systemName: systemImage)
-                    .foregroundStyle(Color.accentColor)
             }
             
             VStack(alignment: .leading, spacing: 12) {
@@ -219,12 +210,19 @@ struct HighlightRow: View {
                 .foregroundStyle(iconColor)
             
             Text(highlight.title)
-                .font(.callout)
+                .font(.caption)
                 .fontWeight(.bold)
         }
-        .padding(20)
+        .padding()
         .frame(width: 140, height: 140, alignment: .leading)
-        .background(HealthColors.sectionBackground)
+        
+        .background(
+            LinearGradient(
+                colors: [HealthColors.sectionBackground, iconColor.opacity(0.7)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
         .clipShape(RoundedRectangle(cornerRadius: 32))
         .overlay(
             RoundedRectangle(cornerRadius: 32)
@@ -379,7 +377,6 @@ private let mockResponse = FoodAnalysisResponse(
     food: Food(
         name: "Chocolate",
         summary: "Alimento rico em açúcar e gordura, consumo deve ser moderado.",
-        classificacaoGeral: "Evitar",
         calories: Calories(
             por100g: 540,
             porPorcao: 108,

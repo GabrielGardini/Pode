@@ -14,17 +14,15 @@ class ChildViewModel {
     func addChild(
         name: String,
         birthDate: Date,
-        allergies: [String] = [],
         context: ModelContext
     ) {
         let child = Child(
             name: name,
-            birthDate: birthDate,
-            allergies: allergies
+            birthDate: birthDate
         )
 
         context.insert(child)
-        print("Saved child: \(child.name), \(child.age), \(child.allergies)")
+        print("Saved child: \(child.name), \(child.age)")
     }
 
     func removeChild(_ child: Child, context: ModelContext) {
@@ -35,12 +33,10 @@ class ChildViewModel {
     func editChild(
         _ child: Child,
         name: String,
-        birthDate: Date,
-        allergies: [String] = []
+        birthDate: Date
     ) {
         child.name = name
         child.birthDate = birthDate
-        child.allergies = allergies
         
         print("Edited child: \(child.name)")
     }

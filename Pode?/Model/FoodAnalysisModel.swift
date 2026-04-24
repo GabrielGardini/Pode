@@ -8,7 +8,6 @@ struct FoodAnalysisResponse: Codable {
 struct Food: Codable {
     let name: String
     let summary: String
-    let classificacaoGeral: String
     let calories: Calories
     let highlights: [Highlight]
     let healthScore: HealthScore
@@ -18,7 +17,6 @@ struct Food: Codable {
     enum CodingKeys: String, CodingKey {
         case name
         case summary
-        case classificacaoGeral = "classificacao_geral"
         case calories
         case highlights
         case healthScore = "health_score"

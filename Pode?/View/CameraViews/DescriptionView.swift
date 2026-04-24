@@ -39,11 +39,11 @@ struct DescriptionView: View {
             .padding(.horizontal, 24)
             
             VStack {
-                TextField("Ex: arroz, feijão e frango grelhado", text: $descriptionText)
+                TextField("Ex: biscoitos, snacks e outros", text: $descriptionText)
                     .focused($isFocused)
                     .submitLabel(.done)
                     .padding(16)
-                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
@@ -64,7 +64,6 @@ struct DescriptionView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
-        .padding(.top, 24)
         .navigationTitle("Descrição")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

@@ -50,33 +50,40 @@ struct OnboardingView: View {
 
             bottomBar
         }
-        .background(Color(UIColor.systemGroupedBackground))
     }
 
     private var isLastStep: Bool { currentIndex == steps.count - 1 }
 
     private var bottomBar: some View {
         VStack(spacing: 12) {
-            Button(isLastStep ? "Começar" : "Próximo") {
+            
+            Button {
                 if isLastStep {
                     finishOnboarding()
                 } else {
                     withAnimation { currentIndex += 1 }
                 }
+            } label: {
+                Text(isLastStep ? "Começar" : "Próximo")
+                    .padding(8)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.blue)
+            .buttonStyle(.glassProminent)
             .buttonSizing(.flexible)
-
-            Button("Pular") {
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            
+            Button {
                 finishOnboarding()
+            } label: {
+                Text("Pular")
+                    .padding(8)
             }
-            .buttonStyle(.bordered)
-            .tint(.gray)
+            .buttonStyle(.glassProminent)
             .buttonSizing(.flexible)
+            .tint(.gray)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 16)
     }
 
     private func finishOnboarding() {

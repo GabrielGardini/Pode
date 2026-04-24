@@ -47,7 +47,7 @@ final class OpenAIService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let body = OpenAIRequest(
-            model: "gpt-4o-mini-2024-07-18",
+            model: "gpt-5.4-mini",
             input: prompt
         )
         

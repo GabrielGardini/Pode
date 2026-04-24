@@ -72,6 +72,5 @@ struct CameraTest: View {
                 cameraManager.capturedImage = nil
             }
         }
-        .padding()
     }
 }

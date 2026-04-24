@@ -14,12 +14,7 @@ struct ChildFormatter {
             let name = child.name
             let age = "\(child.age) meses"
             
-            let allergies = child.allergies
-                .filter { !$0.isEmpty }
-            
-            let allergiesText = allergies.isEmpty ? "nenhuma conhecida" : allergies.joined(separator: ", ")
-            
-            return "{ name: \"\(name)\", age: \"\(age)\", allergies: \"\(allergiesText)\" }"
+            return "{ name: \"\(name)\", age: \"\(age)\" }"
         }
         
         return "[\n  \(parts.joined(separator: ",\n  "))\n]"

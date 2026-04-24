@@ -16,7 +16,6 @@ struct AddChildView: View {
     
     @State private var name: String = ""
     @State private var birthDate: Date = .now
-    @State private var allergies: [String] = []
     
     var body: some View {
         NavigationStack {
@@ -36,51 +35,6 @@ struct AddChildView: View {
                     .datePickerStyle(.wheel)
                     .labelsHidden()
                 }
-                
-                Section(header: Text("Restrições alimentares")) {
-                    DisclosureGroup {
-                        row("Amendoim")
-                        row("Nozes")
-                        row("Leite")
-                        row("Ovos")
-                        row("Soja")
-                        row("Trigo")
-                        row("Peixes")
-                        row("Crustáceos")
-                        row("Gergelim")
-                    } label: {
-                        Label {
-                            Text("Alergias alimentares")
-                                .fontWeight(.bold)
-                        } icon: {
-                            Image(systemName: "exclamationmark.triangle")
-                        }
-                    }
-                    
-                    DisclosureGroup {
-                        row("Lactose")
-                        row("Glúten")
-                        row("Frutose")
-                    } label: {
-                        Label {
-                            Text("Intolerâncias alimentares")
-                                .fontWeight(.bold)
-                        } icon: {
-                            Image(systemName: "drop.triangle")
-                        }
-                    }
-                    
-                    DisclosureGroup {
-                        row("Doença celíaca")
-                    } label: {
-                        Label {
-                            Text("Condições médicas")
-                                .fontWeight(.bold)
-                        } icon: {
-                            Image(systemName: "cross.case")
-                        }
-                    }
-                }
             }
             .navigationTitle("Adicionar criança")
             .navigationBarTitleDisplayMode(.inline)
@@ -93,32 +47,12 @@ struct AddChildView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(role: .confirm) {
-                        viewModel.addChild(name: name, birthDate: birthDate, allergies: allergies, context: modelContext)
+                        viewModel.addChild(name: name, birthDate: birthDate, context: modelContext)
                         dismiss()
                     }
                     .disabled(name.isEmpty)
                 }
             }
         }
-    }
-    
-    func row(_ item: String) -> some View {
-        Button {
-            if allergies.contains(item) {
-                allergies.removeAll { $0 == item }
-            } else {
-                allergies.append(item)
-            }
-        } label: {
-            HStack {
-                Text(item)
-                
-                Spacer()
-                
-                Image(systemName: allergies.contains(item) ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(allergies.contains(item) ? .accentColor : .gray)
-            }
-        }
-        .buttonStyle(.plain)
     }
 }

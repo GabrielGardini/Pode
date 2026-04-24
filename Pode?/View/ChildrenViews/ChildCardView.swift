@@ -21,7 +21,7 @@ struct ChildCardView: View {
         HStack {
             
             // Ícone
-            Image(systemName: iconForAge(child.age))
+            Image(systemName: iconForAge(child.age / 12))
                 .font(.largeTitle)
                 .foregroundStyle(Color.accentColor)
                 .padding(.leading, 24)
@@ -34,15 +34,9 @@ struct ChildCardView: View {
                     .fontWeight(.bold)
                     .lineLimit(2)
                 
-                Text(ageDisplay())
+                Text(Child.ageDisplay(age: child.age))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                
-                if !(allergiesText(child.allergies).isEmpty) {
-                    Text(allergiesText(child.allergies))
-                        .font(.body)
-                        .foregroundStyle(.orange)
-                }
             }
             .padding()
             
@@ -69,58 +63,13 @@ struct ChildCardView: View {
             }
         }
     }
-}
-
-extension ChildCardView {
-    
-    func ageDisplay() -> String {
-        let age = child.age
-        
-        if age < 12 {
-            let monthText = age == 1 ? "mês" : "meses"
-            return "\(age) \(monthText)"
-        }
-        
-        let years = age / 12
-        let months = age % 12
-        
-        let yearText = years == 1 ? "ano" : "anos"
-        
-        if months == 0 {
-            return "\(years) \(yearText)"
-        }
-        
-        let monthText = months == 1 ? "mês" : "meses"
-        return "\(years) \(yearText) e \(months) \(monthText)"
-    }
-    
-    func monthsBetween(_ from: Date, _ to: Date) -> Int {
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.month], from: from, to: to)
-        return max(0, components.month ?? 0)
-    }
-    
-    func allergiesText(_ allergies: [String]) -> String {
-        let preview = allergies.prefix(2).joined(separator: ", ")
-        
-        if allergies.count > 2 {
-            return "\(preview) +\(allergies.count - 2)"
-        } else {
-            return preview
-        }
-    }
-}
-
-extension ChildCardView {
     
     func iconForAge(_ age: Int) -> String {
         switch age {
         case 0...2:
             return "figure.and.child.holdinghands"
-        case 3...5:
-            return "figure.play"
         default:
-            return "backpack"
+            return "figure.child"
         }
     }
 }

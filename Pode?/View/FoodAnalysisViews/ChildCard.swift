@@ -18,7 +18,7 @@ struct ChildCard: View {
                         .font(.system(.title2, design: .rounded, weight: .bold))
                         .foregroundStyle(.primary)
                     
-                    Text(ageText)
+                    Text(Child.ageDisplay(age: child.ageMonths))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -29,7 +29,7 @@ struct ChildCard: View {
             }
             
             InfoSection(title: "Orientação", systemImage: "checklist.checked") {
-                HStack(alignment: .top, spacing: 10) {
+                HStack(spacing: 10) {
                     if let frequency = child.frequency {
                         Image(systemName: frequency.allowed ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .foregroundStyle(frequency.allowed ? HealthColors.positive : HealthColors.negative)
@@ -59,24 +59,26 @@ struct ChildCard: View {
                 }
             }
             
-            InfoSection(title: "Alternativas", systemImage: "leaf.fill") {
-                VStack(alignment: .leading, spacing: 12) {
-                    if let alternatives = child.alternatives {
-                        ForEach(Array(alternatives.enumerated()), id: \.element.id) { index, alternative in
-                            HStack(spacing: 10) {
-                                Image(systemName: "sparkles")
-                                    .foregroundStyle(Color.accentColor)
+            if badgeStylePode(for: child.classificacaoGeralCrianca) != .positive {
+                InfoSection(title: "Alternativas", systemImage: "leaf.fill") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        if let alternatives = child.alternatives {
+                            ForEach(Array(alternatives.enumerated()), id: \.element.id) { index, alternative in
+                                HStack(spacing: 10) {
+                                    Image(systemName: "sparkles")
+                                        .foregroundStyle(Color.accentColor)
+                                    
+                                    Text(alternative.name)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.primary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    
+                                    Spacer()
+                                }
                                 
-                                Text(alternative.name)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.primary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                
-                                Spacer()
-                            }
-                            
-                            if index < alternatives.count - 1 {
-                                Divider()
+                                if index < alternatives.count - 1 {
+                                    Divider()
+                                }
                             }
                         }
                     }
@@ -98,22 +100,5 @@ struct ChildCard: View {
     
     private var displayName: String {
         child.name.prefix(1).uppercased() + child.name.dropFirst()
-    }
-    
-    private var ageText: String {
-        if child.ageMonths < 24 {
-            return "\(child.ageMonths) meses"
-        }
-        
-        let years = child.ageMonths / 12
-        let months = child.ageMonths % 12
-        
-        if months == 0 {
-            return years == 1 ? "1 ano" : "\(years) anos"
-        }
-        
-        let yearText = years == 1 ? "1 ano" : "\(years) anos"
-        let monthText = months == 1 ? "1 mês" : "\(months) meses"
-        return "\(yearText) e \(monthText)"
     }
 }

@@ -35,6 +35,26 @@ struct ChildrenView: View {
                         )
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                // MUDAR ISSO
+                                modelContext.delete(child)
+                                do {
+                                    try modelContext.save()
+                                } catch {
+                                    print("Failed to delete child: \(error)")
+                                }
+                            } label: {
+                                Label("Excluir", systemImage: "trash")
+                            }
+                            
+                            Button {
+                                selectedChild = child
+                            } label: {
+                                Label("Editar", systemImage: "pencil")
+                            }
+                            .tint(.blue)
+                        }
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)

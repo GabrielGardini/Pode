@@ -35,26 +35,31 @@ struct ScanView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    headerSection
-                    tipsSection
-                    bottomCTA
+            ZStack(alignment: .center) {
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        headerSection
+                            .padding()
+                        tipsSection
+                            .padding()
+                        bottomCTA
+                    }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-                .padding(.bottom, 120)
-            }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Escanear")
-            .navigationBarTitleDisplayMode(.large)
-            .navigationDestination(
-                isPresented: Binding(
-                    get: { isShowingResult },
-                    set: { if !$0 { pipeline.state = .idle } }
-                )
-            ) {
-                destinationView()
+                .navigationTitle("Escanear")
+                .navigationBarTitleDisplayMode(.large)
+                .navigationDestination(
+                    isPresented: Binding(
+                        get: { isShowingResult },
+                        set: { if !$0 { pipeline.state = .idle } }
+                    )
+                ) {
+                    destinationView()
+                }
+                
+                if isLoading {
+                    loadingOverlay
+                }
             }
         }
         .sheet(isPresented: $presentScanner) {
@@ -62,7 +67,6 @@ struct ScanView: View {
                 result: $result,
                 onFinish: handleScannerFinish
             )
-            .presentationDetents([.large])
         }
         .alert(
             "Não foi possível concluir a leitura",
@@ -101,7 +105,6 @@ private extension ScanView {
             Text("Fotografe a tabela nutricional ou a lista de ingredientes para verificar se o alimento é adequado para a criança.")
                 .font(.body)
                 .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
         }
     }
         
@@ -111,8 +114,9 @@ private extension ScanView {
                 .font(.headline)
             
             VStack(alignment: .leading, spacing: 10) {
+                tipItem("Limpe as lentes da câmera.")
                 tipItem("Use boa iluminação e evite sombras.")
-                tipItem("Centralize a tabela ou os ingredientes.")
+                tipItem("Centralize a tabela.")
                 tipItem("Mantenha o celular firme por alguns segundos.")
             }
         }
@@ -120,59 +124,54 @@ private extension ScanView {
     
     var bottomCTA: some View {
         VStack(spacing: 0) {
-//            Divider()
-//                .overlay(Color(.separator).opacity(0.35))
-            
             Button {
                 presentScanner = true
             } label: {
                 Label("Escanear alimento", systemImage: "camera.viewfinder")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .buttonSizing(.flexible)
-
-                
+                    .padding(8)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .buttonStyle(.glassProminent)
+            .buttonSizing(.flexible)
             .disabled(isLoading || children.isEmpty)
             .accessibilityHint(children.isEmpty ? "Adicione uma criança para escanear alimentos." : "")
-            .padding(.horizontal, 20)
-            .buttonSizing(.flexible)
-            .padding(.top, 12)
-//            .padding(.bottom, 10)
-//            .background(.bar)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+            
             if children.isEmpty {
                 Text("Adicione uma criança para escanear alimentos.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 20)
+                    .padding()
             }
-            
         }
     }
     
     var loadingOverlay: some View {
         ZStack {
-            Rectangle()
-                .fill(.black.opacity(0.12))
+            Color.black.opacity(0.25)
                 .ignoresSafeArea()
             
-            VStack(spacing: 14) {
+            VStack(spacing: 16) {
+                
                 ProgressView()
                     .controlSize(.large)
+                    .tint(.accentColor)
                 
-                Text("Analisando informações…")
-                    .font(.headline)
-                
-                Text("Isso pode levar alguns segundos.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                VStack(spacing: 4) {
+                    Text("Analisando informações…")
+                        .font(.headline)
+                    
+                    Text("Isso leva apenas alguns segundos")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(24)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .padding(32)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            )
+            .shadow(color: .black.opacity(0.1), radius: 20, y: 10)
         }
         .transition(.opacity)
     }
@@ -201,7 +200,6 @@ private extension ScanView {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(.green)
-                .padding(.top, 1)
             
             Text(text)
                 .font(.subheadline)

@@ -21,7 +21,6 @@ struct PhotoPreviewView: View {
                     .scaledToFill()
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .shadow(color: .black.opacity(0.08), radius: 12, y: 6)
-                    .padding(.horizontal, 16)
                     .transition(.opacity.combined(with: .scale))
             } else {
                 ContentUnavailableView("Sem imagem", systemImage: "photo")

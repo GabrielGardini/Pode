@@ -15,12 +15,10 @@ struct FoodHeroCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(food.name)
+                        Text(capitalized(food.name))
                             .font(.system(.title, design: .rounded, weight: .bold))
                             .foregroundStyle(.primary)
-                        
-                        PodeBadge(style: badgeStylePode(for: food.classificacaoGeral))
-                        
+                                                
                         Text(food.summary)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -29,7 +27,11 @@ struct FoodHeroCard: View {
                     
                     Spacer()
                     
-                    FoodScoreView(score: food.healthScore.score)
+                    VStack(spacing: 6) {
+                        FoodScoreView(score: food.healthScore.score)
+                        
+                        HealthScoreBadge(style: badgeStyleHealthScore(for: food.healthScore.label))
+                    }
                 }
             }
             
@@ -40,6 +42,7 @@ struct FoodHeroCard: View {
                     }
                 }
             }
+            .scrollClipDisabled()
             
             InfoSection(title: "Resumo principal", systemImage: "heart.fill") {
                 VStack(spacing: 12) {
@@ -96,32 +99,57 @@ struct FoodHeroCard: View {
         }
     }
     
-    private var scoreBadgeStyle: HealthBadge.Style {
-        let ratio = Double(food.healthScore.score) / Double(food.healthScore.maxScore)
-        if ratio >= 0.7 { return .positive }
-        if ratio >= 0.4 { return .neutral }
-        return .negative
-    }
-    
-    private func badgeStyle(for text: String) -> HealthBadge.Style {
+    private func badgeStyleHealthScore(for text: String) -> HealthScoreBadge.Style {
         switch text.lowercased() {
-        case "recomendado":
+        case "muito_saudavel":
+            return .very_positive
+        case "saudavel":
             return .positive
         case "moderado":
             return .neutral
-        default:
+        case "pouco_saudavel":
             return .negative
+        default:
+            return .very_negative
         }
     }
-    
-    private func badgeStylePode(for text: String) -> PodeBadge.Style {
-        switch text.lowercased() {
-        case "recomendado":
-            return .positive
-        case "moderado":
-            return .neutral
-        default:
-            return .negative
+        
+    private struct HealthScoreBadge: View {
+        enum Style {
+            case very_positive
+            case positive
+            case neutral
+            case negative
+            case very_negative
+            
+            var text: String {
+                switch self {
+                case .very_positive: return "Muito Saudável"
+                case .positive: return "Saudável"
+                case .neutral: return "Moderado"
+                case .negative: return "Pouco Saudável"
+                case .very_negative: return "Não Saudável"
+                }
+            }
+            
+            var foreground: Color {
+                switch self {
+                case .very_positive, .positive: return HealthColors.positive
+                case .neutral: return HealthColors.warning
+                case .very_negative, .negative: return HealthColors.negative
+                }
+            }
+        }
+        
+        let style: Style
+        
+        var body: some View {
+            Text(style.text)
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(style.foreground)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
         }
     }
     
