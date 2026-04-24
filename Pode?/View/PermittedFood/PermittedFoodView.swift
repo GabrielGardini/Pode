@@ -95,7 +95,7 @@ struct MonthTimelineRow: View {
 
                             if let notes = food.notes, !notes.isEmpty {
                                 Text(notes)
-                                    .font(.subheadline.italic())
+                                    .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
                         }
