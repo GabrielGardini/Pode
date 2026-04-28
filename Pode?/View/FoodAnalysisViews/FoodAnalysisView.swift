@@ -8,7 +8,7 @@ struct FoodAnalysisView: View {
         NavigationStack {
             Form {
                 Section(
-                    footer: Text("As informações apresentadas não substituem orientações ou instruções médicas. Para mais detalhes, consulte o [Guia Alimentar para a População Brasileira](https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf)")
+                    footer: Text("As informações apresentadas não substituem orientações ou instruções médicas. Para mais detalhes, consulte o [Guia Alimentar para a População Brasileira](https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_populacao_brasileira_2ed.pdf).")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 ) {

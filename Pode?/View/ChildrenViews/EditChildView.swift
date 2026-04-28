@@ -52,7 +52,6 @@ struct EditChildView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // MARK: - Avatar preview
                 Section {
                     VStack(spacing: 14) {
                         ZStack {
@@ -81,13 +80,11 @@ struct EditChildView: View {
                 .listRowBackground(Color.clear)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
 
-                // MARK: - Nome
                 Section(header: Text("Nome")) {
                     TextField("Nome da criança", text: $newName)
                         .textInputAutocapitalization(.words)
                 }
 
-                // MARK: - Data de nascimento
                 Section(header: Text("Data de nascimento")) {
                     DatePicker(
                         "",

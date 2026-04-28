@@ -6,58 +6,6 @@
 //
 //
 
-//import SwiftUI
-//import SwiftData
-//
-//struct AddChildView: View {
-//    @Environment(\.modelContext) var modelContext
-//    @Environment(\.dismiss) var dismiss
-//    
-//    var viewModel: ChildViewModel
-//    
-//    @State private var name: String = ""
-//    @State private var birthDate: Date = .now
-//    
-//    var body: some View {
-//        NavigationStack {
-//            Form {
-//                Section(header: Text("Nome")) {
-//                    TextField("", text: $name)
-//                        .textInputAutocapitalization(.words)
-//                }
-//                
-//                Section(header: Text("Data de nascimento")) {
-//                    DatePicker(
-//                        "",
-//                        selection: $birthDate,
-//                        in: ...Date(),
-//                        displayedComponents: [.date]
-//                    )
-//                    .datePickerStyle(.wheel)
-//                    .labelsHidden()
-//                }
-//            }
-//            .navigationTitle("Adicionar criança")
-//            .navigationBarTitleDisplayMode(.inline)
-//            .toolbar {
-//                ToolbarItem(placement: .cancellationAction) {
-//                    Button(role: .cancel) {
-//                        dismiss()
-//                    }
-//                }
-//                
-//                ToolbarItem(placement: .confirmationAction) {
-//                    Button(role: .confirm) {
-//                        viewModel.addChild(name: name, birthDate: birthDate, context: modelContext)
-//                        dismiss()
-//                    }
-//                    .disabled(name.isEmpty)
-//                }
-//            }
-//        }
-//    }
-//}
-
 import SwiftUI
 import SwiftData
 
@@ -95,7 +43,6 @@ struct AddChildView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // MARK: - Avatar preview
                 Section {
                     VStack(spacing: 14) {
                         ZStack {
@@ -124,13 +71,11 @@ struct AddChildView: View {
                 .listRowBackground(Color.clear)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
 
-                // MARK: - Nome
                 Section(header: Text("Nome")) {
                     TextField("Nome da criança", text: $name)
                         .textInputAutocapitalization(.words)
                 }
 
-                // MARK: - Data de nascimento
                 Section(header: Text("Data de nascimento")) {
                     DatePicker(
                         "",
