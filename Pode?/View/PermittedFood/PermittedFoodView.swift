@@ -8,13 +8,12 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Main View
 struct PermittedFoodView: View {
+    @State private var model = PermittedFoodViewModel()
     
     @Query var children: [Child]
     @Environment(\.modelContext) var modelContext
-    
-    @State private var model = PermittedFoodViewModel()
-    @State private var showingPicker = false
     
     var body: some View {
         NavigationStack {
@@ -52,34 +51,31 @@ struct PermittedFoodView: View {
                     .padding(.bottom, 40)
                 }
                 .navigationTitle("Guia")
+                
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        if !children.isEmpty {
-                            Button {
-                                showingPicker = true
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "figure.child")
-                                    Text(model.selectedChild?.name ?? "Selecionar")
-                                        .font(.subheadline.weight(.medium))
-                                    Image(systemName: "chevron.up.chevron.down")
-                                        .font(.caption2.weight(.semibold))
-                                        .foregroundStyle(.secondary)
+                    if !children.isEmpty {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Menu {
+                                ForEach(children) { child in
+                                    Button {
+                                        withAnimation(.snappy) {
+                                            model.selectedChild = child
+                                        }
+                                        
+                                        scrollToChildMonth(child.age, proxy: proxy)
+                                    } label: {
+                                        if child.id == model.selectedChild?.id {
+                                            Label(child.name, systemImage: "checkmark")
+                                        } else {
+                                            Text(child.name)
+                                        }
+                                    }
                                 }
+                            } label: {
+                                Image(systemName: "line.3.horizontal.decrease.circle")
                             }
                         }
                     }
-                }
-                .sheet(isPresented: $showingPicker) {
-                    ChildWheelPickerSheet(
-                        children: children,
-                        selectedChild: $model.selectedChild
-                    ) { child in
-                        scrollToChildMonth(child.age, proxy: proxy)
-                    }
-                    .presentationDetents([.height(280)])
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(24)
                 }
                 .onAppear {
                     if model.selectedChild == nil {

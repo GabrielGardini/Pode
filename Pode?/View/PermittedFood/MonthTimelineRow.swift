@@ -55,8 +55,6 @@ struct FoodRowView: View {
     }
 }
 
-// MARK: - Timeline Row
-
 struct MonthTimelineRow: View {
     let item: MonthlyPermission
     let status: TimelineStatus
