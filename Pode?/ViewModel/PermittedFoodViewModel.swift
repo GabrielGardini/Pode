@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import Combine
 
 // MARK: - Models
 public struct ChildPermittedFood: Identifiable, Hashable {
@@ -61,11 +60,11 @@ public struct MonthlyPermission: Identifiable, Hashable {
 
 // MARK: - ViewModel
 @MainActor
-public final class PermittedFoodViewModel: ObservableObject {
-    
-    @Published var selectedChild: Child?
-    
-    let timeline: [MonthlyPermission]
+@Observable
+public final class PermittedFoodViewModel {
+
+    public private(set) var timeline: [MonthlyPermission]
+    var selectedChild: Child?
     
     public init() {
         self.timeline = [

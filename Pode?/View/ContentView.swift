@@ -21,7 +21,7 @@ struct ContentView: View {
                 }
             PermittedFoodView()
                 .tabItem {
-                    Label("Alimentos Permitidos", systemImage: "fork.knife")
+                    Label("Guia", systemImage: "fork.knife")
                 }
         }
     }
