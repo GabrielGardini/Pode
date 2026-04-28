@@ -1,8 +1,6 @@
 import SwiftUI
-
-#if canImport(SwiftData)
 import SwiftData
-#endif
+import Combine
 
 // MARK: - Models
 public struct ChildPermittedFood: Identifiable, Hashable {
@@ -63,11 +61,11 @@ public struct MonthlyPermission: Identifiable, Hashable {
 
 // MARK: - ViewModel
 @MainActor
-@Observable
-public final class PermittedFoodViewModel {
-    public private(set) var children: [ChildPermittedFood] = []
-    public private(set) var timeline: [MonthlyPermission]
-    public var selectedChild: ChildPermittedFood?
+public final class PermittedFoodViewModel: ObservableObject {
+    
+    @Published var selectedChild: Child?
+    
+    let timeline: [MonthlyPermission]
     
     public init() {
         self.timeline = [
@@ -230,40 +228,4 @@ public final class PermittedFoodViewModel {
             )
         ]
     }
-    
-#if canImport(SwiftData)
-    public func loadChildren(from context: ModelContext) {
-        do {
-            var descriptor = FetchDescriptor<Child>()
-            descriptor.sortBy = [
-                .init(\.birthDate, order: .reverse),
-                .init(\.name, order: .forward)
-            ]
-            
-            let results = try context.fetch(descriptor)
-            
-            let mapped: [ChildPermittedFood] = results.map { child in
-                ChildPermittedFood(
-                    name: child.name,
-                    monthsOld: child.age
-                )
-            }
-            
-            self.children = mapped
-            self.selectedChild = mapped.first
-        } catch {
-            self.children = []
-            self.selectedChild = nil
-            
-#if DEBUG
-            print("[PermittedFoodViewModel] Failed to fetch children: \(error)")
-#endif
-        }
-    }
-#else
-    public func loadChildrenFromDatabase() {
-        self.children = []
-        self.selectedChild = nil
-    }
-#endif
 }

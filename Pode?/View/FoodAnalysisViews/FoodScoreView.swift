@@ -129,6 +129,6 @@ struct FoodScoreView: View {
 }
 
 #Preview {
-    FoodScoreView(score: 100)
+    FoodScoreView(score: 72)
         .background(.gray)
 }
