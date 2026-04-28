@@ -10,7 +10,7 @@ import SwiftData
 
 // MARK: - Pills Style
 struct ChildPill: View {
-    let child: ChildPermittedFood
+    let child: Child
     let isSelected: Bool
 
     var body: some View {
@@ -113,8 +113,9 @@ struct MonthTimelineRow: View {
 // MARK: - Main View
 struct PermittedFoodView: View {
     @State private var model = PermittedFoodViewModel()
-
-    @Environment(\.modelContext) private var modelContext
+    
+    @Query var children: [Child]
+    @Environment(\.modelContext) var modelContext
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -140,18 +141,18 @@ struct PermittedFoodView: View {
                 VStack(spacing: 0) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            if model.children.isEmpty {
+                            if children.isEmpty {
                                 Text("Nenhuma criança cadastrada")
                                     .font(.callout)
                                     .foregroundStyle(.secondary)
                             } else {
-                                ForEach(model.children) { child in
+                                ForEach(children) { child in
                                     Button {
                                         withAnimation(.snappy) {
                                             model.selectedChild = child
                                         }
 
-                                        scrollToChildMonth(child.monthsOld, proxy: proxy)
+                                        scrollToChildMonth(child.age, proxy: proxy)
                                     } label: {
                                         ChildPill(
                                             child: child,
@@ -172,20 +173,19 @@ struct PermittedFoodView: View {
             }
             .navigationTitle("Alimentos Permitidos")
             .onAppear {
-                model.loadChildren(from: modelContext)
-
+                
                 if model.selectedChild == nil {
-                    model.selectedChild = model.children.first
+                    model.selectedChild = children.first
                 }
 
-                if let month = model.selectedChild?.monthsOld {
+                if let month = model.selectedChild?.age {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         scrollToChildMonth(month, proxy: proxy)
                     }
                 }
             }
             .onChange(of: model.selectedChild) { _, newValue in
-                scrollToChildMonth(newValue?.monthsOld, proxy: proxy)
+                scrollToChildMonth(newValue?.age, proxy: proxy)
             }
         }
     }
@@ -202,7 +202,7 @@ struct PermittedFoodView: View {
     }
 
     private func status(for item: MonthlyPermission) -> TimelineStatus {
-        let currentMonth = model.selectedChild?.monthsOld ?? 0
+        let currentMonth = model.selectedChild?.age ?? 0
         let endMonth = item.endMonth ?? item.month
 
         if currentMonth > endMonth {

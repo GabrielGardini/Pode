@@ -49,7 +49,7 @@ struct FoodCard: View {
                     KeyValueRow(
                         title: "Calorias / 100 g",
                         value: food.calories.por100g.map {
-                            "\(format(Double($0))) g" } ?? "—",
+                            "\(format(Double($0))) kcal" } ?? "—",
                         emphasizeValue: true
                     )
                     
@@ -57,7 +57,7 @@ struct FoodCard: View {
                     
                     KeyValueRow(
                         title: "Calorias / porção",
-                        value: food.calories.porPorcao.map { "\(format(Double($0))) g" } ?? "—",
+                        value: food.calories.porPorcao.map { "\(format(Double($0))) kcal" } ?? "—",
                         emphasizeValue: true
                     )
                     
