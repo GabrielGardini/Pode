@@ -8,203 +8,112 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Pills Style
-struct ChildPill: View {
-    let child: Child
-    let isSelected: Bool
-
-    var body: some View {
-        Text(child.name)
-            .font(.callout.weight(.semibold))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(
-                Capsule()
-                    .fill(isSelected ? Color.accentColor.opacity(0.15) : Color(.systemGray6))
-            )
-            .overlay(
-                Capsule()
-                    .stroke(isSelected ? Color.accentColor : Color(.systemGray3), lineWidth: 1)
-            )
-            .foregroundStyle(isSelected ? Color.accentColor : Color.primary)
-            .animation(.easeInOut(duration: 0.2), value: isSelected)
-    }
-}
-
-// MARK: - Timeline Status
-enum TimelineStatus {
-    case past
-    case current
-    case future
-
-    var color: Color {
-        switch self {
-        case .past:
-            return .green
-        case .current:
-            return .blue
-        case .future:
-            return .red
-        }
-    }
-}
-
-// MARK: - Timeline Row
-struct MonthTimelineRow: View {
-    let item: MonthlyPermission
-    let status: TimelineStatus
-    let isLast: Bool
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 18) {
-            VStack(spacing: 0) {
-                Circle()
-                    .fill(status.color)
-                    .frame(
-                        width: status == .current ? 30 : 24,
-                        height: status == .current ? 30 : 24
-                    )
-                    .overlay {
-                        if status == .current {
-                            Circle()
-                                .stroke(status.color.opacity(0.16), lineWidth: 8)
-                        }
-                    }
-
-                if !isLast {
-                    Rectangle()
-                        .fill(status.color)
-                        .frame(width: 3)
-                        .frame(minHeight: 96)
-                        .opacity(status == .future ? 0.35 : 1)
-                }
-            }
-            .frame(width: 34)
-
-            VStack(alignment: .leading, spacing: 10) {
-                Text(item.title)
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(status == .future ? .secondary : .primary)
-
-                VStack(alignment: .leading, spacing: 14) {
-                    ForEach(item.permittedFoods) { food in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(food.name)
-                                .font(.headline.weight(.semibold))
-                                .foregroundStyle(status == .future ? .secondary : .primary)
-
-                            if let notes = food.notes, !notes.isEmpty {
-                                Text(notes)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                }
-            }
-            .padding(.bottom, 28)
-
-            Spacer()
-        }
-        .padding(.horizontal, 20)
-    }
-}
-
-// MARK: - Main View
 struct PermittedFoodView: View {
-    @State private var model = PermittedFoodViewModel()
     
     @Query var children: [Child]
     @Environment(\.modelContext) var modelContext
-
+    
+    @State private var model = PermittedFoodViewModel()
+    @State private var showingPicker = false
+    
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    Color.clear
-                        .frame(height: 24)
-                        .id("timeline-top")
-
-                    ForEach(Array(model.timeline.enumerated()), id: \.element.id) { index, item in
-                        MonthTimelineRow(
-                            item: item,
-                            status: status(for: item),
-                            isLast: index == model.timeline.count - 1
-                        )
-                        .id("month-\(item.month)")
+        NavigationStack {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        Color.clear
+                            .frame(height: 8)
+                            .id("timeline-top")
+                        
+                        if children.isEmpty {
+                            ContentUnavailableView(
+                                "Nenhuma criança cadastrada",
+                                systemImage: "figure.2.and.child.holdinghands",
+                                description: Text("Adicione uma criança para ver o guia de alimentos.")
+                            )
+                        } else if model.selectedChild != nil && (model.selectedChild?.age ?? 0) >= 24 {
+                            ContentUnavailableView(
+                                "Fora da faixa etária",
+                                systemImage: "calendar.badge.exclamationmark",
+                                description: Text("Este guia é válido para crianças até 24 meses.")
+                            )
+                        } else {
+                            ForEach(Array(model.timeline.enumerated()), id: \.element.id) { index, item in
+                                MonthTimelineRow(
+                                    item: item,
+                                    status: status(for: item),
+                                    isLast: index == model.timeline.count - 1
+                                )
+                                .id("month-\(item.month)")
+                            }
+                        }
                     }
+                    .padding(.top, 12)
+                    .padding(.bottom, 40)
                 }
-                .padding(.top, 24)
-                .padding(.bottom, 40)
-            }
-            .safeAreaInset(edge: .top) {
-                VStack(spacing: 0) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            if children.isEmpty {
-                                Text("Nenhuma criança cadastrada")
-                                    .font(.callout)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                ForEach(children) { child in
-                                    Button {
-                                        withAnimation(.snappy) {
-                                            model.selectedChild = child
-                                        }
-
-                                        scrollToChildMonth(child.age, proxy: proxy)
-                                    } label: {
-                                        ChildPill(
-                                            child: child,
-                                            isSelected: child.id == model.selectedChild?.id
-                                        )
-                                    }
-                                    .buttonStyle(.plain)
+                .navigationTitle("Guia")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        if !children.isEmpty {
+                            Button {
+                                showingPicker = true
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "figure.child")
+                                    Text(model.selectedChild?.name ?? "Selecionar")
+                                        .font(.subheadline.weight(.medium))
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.caption2.weight(.semibold))
+                                        .foregroundStyle(.secondary)
                                 }
                             }
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                    }
-
-                    Divider()
-                }
-                .background(.ultraThinMaterial)
-            }
-            .navigationTitle("Alimentos Permitidos")
-            .onAppear {
-                
-                if model.selectedChild == nil {
-                    model.selectedChild = children.first
-                }
-
-                if let month = model.selectedChild?.age {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        scrollToChildMonth(month, proxy: proxy)
                     }
                 }
-            }
-            .onChange(of: model.selectedChild) { _, newValue in
-                scrollToChildMonth(newValue?.age, proxy: proxy)
+                .sheet(isPresented: $showingPicker) {
+                    ChildWheelPickerSheet(
+                        children: children,
+                        selectedChild: $model.selectedChild
+                    ) { child in
+                        scrollToChildMonth(child.age, proxy: proxy)
+                    }
+                    .presentationDetents([.height(280)])
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(24)
+                }
+                .onAppear {
+                    if model.selectedChild == nil {
+                        model.selectedChild = children.first
+                    }
+                    
+                    if let month = model.selectedChild?.age {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            scrollToChildMonth(month, proxy: proxy)
+                        }
+                    }
+                }
+                .onChange(of: model.selectedChild) { _, newValue in
+                    scrollToChildMonth(newValue?.age, proxy: proxy)
+                }
             }
         }
     }
-
+    
     private func scrollToChildMonth(_ month: Int?, proxy: ScrollViewProxy) {
         guard let month,
               let target = model.timeline.first(where: { $0.contains(month: month) }) else {
             return
         }
-
+        
         withAnimation(.snappy) {
             proxy.scrollTo("month-\(target.month)", anchor: .top)
         }
     }
-
+    
     private func status(for item: MonthlyPermission) -> TimelineStatus {
         let currentMonth = model.selectedChild?.age ?? 0
         let endMonth = item.endMonth ?? item.month
-
+        
         if currentMonth > endMonth {
             return .past
         } else if item.contains(month: currentMonth) {
@@ -212,12 +121,5 @@ struct PermittedFoodView: View {
         } else {
             return .future
         }
-    }
-}
-
-// MARK: - Preview
-#Preview {
-    NavigationStack {
-        PermittedFoodView()
     }
 }

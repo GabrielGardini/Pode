@@ -135,6 +135,11 @@ struct ChildrenView: View {
             .sheet(item: $selectedChild) { child in
                 EditChildView(child: child, viewModel: viewModel)
             }
+            .onAppear {
+                withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                    appear.toggle()
+                }
+            }
         }
     }
 }
