@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  TabBar.swift
 //  Pode?
 //
 //  Created by Gabriel Gardini on 13/04/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct TabBar: View {
     var body: some View {
         TabView {
             ScanView()

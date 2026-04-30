@@ -8,7 +8,7 @@ struct PodeApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                ContentView()
+                TabBar()
             }
         }
         .modelContainer(for: [Child.self])

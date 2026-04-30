@@ -17,14 +17,9 @@ struct HowItWorksView: View {
             Form {
                 Section {
                     VStack(spacing: 14) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.accentColor.opacity(0.12))
-                                .frame(width: 72, height: 72)
-                            Image(systemName: "brain.head.profile")
-                                .font(.system(size: 32, weight: .light))
-                                .foregroundStyle(Color.accentColor)
-                        }
+                        Image(systemName: "brain.head.profile")
+                            .font(.system(size: 72, weight: .light))
+                            .foregroundStyle(Color.accentColor)
 
                         VStack(spacing: 6) {
                             Text("Como a IA interpreta")
@@ -41,13 +36,12 @@ struct HowItWorksView: View {
                 .listRowBackground(Color.clear)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
 
-                // MARK: - O que a câmera captura
                 Section {
                     infoRow(
                         icon: "camera.fill",
                         iconColor: .accentColor,
                         title: "Captura da imagem",
-                        description: "O app fotografa a tabela nutricional ou a lista de ingredientes. Quanto mais nítida e bem iluminada, mais precisa será a leitura."
+                        description: "O app fotografa a tabela nutricional. Quanto mais nítida e bem iluminada, mais precisa será a leitura."
                     )
                     infoRow(
                         icon: "doc.text.viewfinder",
@@ -59,19 +53,12 @@ struct HowItWorksView: View {
                     sectionHeader(icon: "camera.viewfinder", title: "Etapa 1 — Leitura")
                 }
 
-                // MARK: - Como a IA analisa
                 Section {
                     infoRow(
                         icon: "list.bullet.rectangle",
                         iconColor: .accentColor,
                         title: "Tabela nutricional",
                         description: "A IA identifica nutrientes como sódio, açúcares, gorduras saturadas e trans, e os compara com os limites recomendados para a faixa etária da criança."
-                    )
-                    infoRow(
-                        icon: "text.alignleft",
-                        iconColor: .accentColor,
-                        title: "Lista de ingredientes",
-                        description: "Cada ingrediente é avaliado individualmente. A IA detecta aditivos, conservantes, corantes e substâncias que podem ser prejudiciais ou inadequadas para crianças."
                     )
                     infoRow(
                         icon: "person.2",
@@ -83,24 +70,23 @@ struct HowItWorksView: View {
                     sectionHeader(icon: "cpu", title: "Etapa 2 — Análise")
                 }
 
-                // MARK: - Resultado
                 Section {
                     infoRow(
                         icon: "checkmark.seal.fill",
                         iconColor: .green,
-                        title: "Adequado",
+                        title: "Pode!",
                         description: "O alimento não apresenta ingredientes ou níveis nutricionais preocupantes para a faixa etária."
                     )
                     infoRow(
                         icon: "exclamationmark.triangle.fill",
                         iconColor: .orange,
-                        title: "Atenção",
+                        title: "Evitável",
                         description: "Alguns itens merecem moderação — como excesso de açúcar ou sódio — mas não representam risco imediato."
                     )
                     infoRow(
                         icon: "xmark.octagon.fill",
                         iconColor: .red,
-                        title: "Não recomendado",
+                        title: "Não pode!",
                         description: "Foram encontrados ingredientes ou níveis nutricionais inadequados para a idade. É recomendável evitar o consumo."
                     )
                 } header: {
@@ -147,7 +133,6 @@ struct HowItWorksView: View {
     }
 }
 
-// MARK: - Subviews
 private extension HowItWorksView {
 
     func sectionHeader(icon: String, title: String) -> some View {
