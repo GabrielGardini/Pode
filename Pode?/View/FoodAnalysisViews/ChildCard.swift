@@ -36,7 +36,7 @@ struct ChildCard: View {
                             .foregroundStyle(frequency.allowed ? HealthColors.positive : HealthColors.negative)
                             .font(.title3)
                         
-                        Text(frequency.description)
+                        Text(capitalized(frequency.description))
                             .font(.subheadline)
                             .foregroundStyle(.primary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -69,7 +69,7 @@ struct ChildCard: View {
                                     Image(systemName: "sparkles")
                                         .foregroundStyle(Color.accentColor)
                                     
-                                    Text(alternative.name)
+                                    Text(capitalized(alternative.name))
                                         .font(.subheadline)
                                         .foregroundStyle(.primary)
                                         .fixedSize(horizontal: false, vertical: true)
@@ -159,7 +159,7 @@ struct BulletLine: View {
                 .frame(width: 8, height: 8)
                 .padding(.top, 6)
             
-            Text(text)
+            Text(capitalized(text))
                 .font(.subheadline)
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)

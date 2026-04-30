@@ -26,8 +26,10 @@ struct PermittedFoodView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if allChildren.isEmpty {
-                    emptyState
+                if children.isEmpty {
+                    emptyStateNoChildren
+                } else if allChildren.isEmpty {
+                    emptyStateWithChildren
                 } else {
                     content
                 }
@@ -44,16 +46,16 @@ struct PermittedFoodView: View {
                                 Color.accentColor.opacity(0.3), .teal.opacity(0.1), Color.accentColor.opacity(0.2),
                                 Color.accentColor.opacity(0.05), .teal.opacity(0.05), appear ? .teal.opacity(0.3) : Color.accentColor.opacity(0.05)
                              ])
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                        appear.toggle()
+                    }
+                }
                 .ignoresSafeArea()
             )
             .navigationTitle("Guia")
             .navigationBarTitleDisplayMode(.large)
-            .navigationSubtitle("Mostrando crianças de até 2 anos")
-            .onAppear {
-                withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
-                    appear.toggle()
-                }
-            }
+            .navigationSubtitle(allChildren.isEmpty ? "" : "Criança selecionada: \(model.selectedChild?.name ?? "nenhuma")")
         }
     }
     
@@ -84,11 +86,19 @@ struct PermittedFoodView: View {
 
 private extension PermittedFoodView {
     
-    var emptyState: some View {
+    var emptyStateNoChildren: some View {
         ContentUnavailableView(
-            "Nenhuma criança cadastrada",
-            systemImage: "figure.2.and.child.holdinghands",
+            "Nenhuma criança",
+            systemImage: "person.2.slash",
             description: Text("Adicione uma criança para ver o guia de alimentos.")
+        )
+    }
+    
+    var emptyStateWithChildren: some View {
+        ContentUnavailableView(
+            "Nenhuma criança de até 2 anos",
+            systemImage: "figure.2.and.child.holdinghands",
+            description: Text("O guia é apenas para crianças de até 2 anos.")
         )
     }
     
@@ -139,7 +149,7 @@ private extension PermittedFoodView {
                                 }
                             }
                         } label: {
-                            Image(systemName: "line.3.horizontal.decrease.circle")
+                            Image(systemName: "line.3.horizontal.decrease")
                         }
                     }
                 }

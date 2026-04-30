@@ -36,9 +36,8 @@ struct ScanView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .center) {
-                
+        ZStack {
+            NavigationStack {
                 ScrollView {
                     VStack {
                         heroSection
@@ -79,10 +78,11 @@ struct ScanView: View {
                 ) {
                     destinationView()
                 }
-                
-                if isLoading {
-                    loadingOverlay
-                }
+            }
+            
+            if isLoading {
+                loadingOverlay
+                    .zIndex(999)
             }
         }
         .sheet(isPresented: $presentScanner) {
@@ -131,17 +131,13 @@ struct ScanView: View {
 private extension ScanView {
     
     var heroSection: some View {
-        VStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .fill(Color.accentColor.opacity(0.12))
-                    .frame(width: 96, height: 96)
-                
-                Image(systemName: "camera.viewfinder")
-                    .font(.system(size: 44, weight: .light))
-                    .foregroundStyle(Color.accentColor)
-            }
-            .padding(.top, 8)
+        VStack {
+            Image("ScanVector")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .foregroundStyle(Color.accentColor)
+                .padding(.top, 8)
             
             VStack(spacing: 6) {
                 Text("Verifique o alimento")
@@ -196,7 +192,6 @@ private extension ScanView {
             }
             .padding(.bottom)
         }
-//        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
     
     
@@ -205,7 +200,7 @@ private extension ScanView {
             Button {
                 presentScanner = true
             } label: {
-                Label("Escanear alimento", systemImage: "camera.viewfinder")
+                Label("Escanear tabela", systemImage: "camera.viewfinder")
                     .padding(8)
             }
             .buttonStyle(.glassProminent)
@@ -225,8 +220,8 @@ private extension ScanView {
     
     var loadingOverlay: some View {
         ZStack {
-            Color(.systemBackground)
-                .opacity(0.01) // blocks interaction
+            Color(.black)
+                .opacity(0.25) // blocks interaction
                 .ignoresSafeArea()
             
             VStack(spacing: 16) {
@@ -259,11 +254,11 @@ private extension ScanView {
                 .font(.body)
                 .foregroundStyle(Color.accentColor)
                 .frame(width: 28, alignment: .center)
- 
+            
             Text(text)
                 .font(.subheadline)
                 .foregroundStyle(.primary)
- 
+            
             Spacer()
         }
         .padding(.horizontal, 16)

@@ -120,11 +120,6 @@ struct FoodCard: View {
         }
         return String(format: "%.1f", value)
     }
-    
-    func capitalized(_ text: String) -> String {
-        guard let first = text.first else { return text }
-        return first.uppercased() + text.dropFirst()
-    }
 }
 
 struct HealthScoreBadge: View {
@@ -173,13 +168,13 @@ struct KeyValueRow: View {
     
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(title)
+            Text(capitalized(title))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
             Spacer()
             
-            Text(value)
+            Text(capitalized(value))
                 .font(emphasizeValue ? .subheadline.weight(.bold) : .subheadline.weight(.semibold))
                 .foregroundStyle(emphasizeValue ? Color.accentColor : .primary)
                 .multilineTextAlignment(.trailing)
@@ -198,7 +193,7 @@ struct HighlightRow: View {
                 .font(.title3)
                 .foregroundStyle(iconColor)
             
-            Text(highlight.title)
+            Text(capitalized(highlight.title))
                 .font(.caption)
                 .fontWeight(.bold)
         }
@@ -240,4 +235,9 @@ struct HighlightRow: View {
             return .secondary
         }
     }
+}
+
+func capitalized(_ text: String) -> String {
+    guard let first = text.first else { return text }
+    return first.uppercased() + text.dropFirst()
 }
