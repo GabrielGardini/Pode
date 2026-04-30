@@ -132,19 +132,100 @@ struct PromptBuilder {
 
         # Classificação por criança
 
-        ### Regras absolutas
+        Classifique individualmente para cada criança usando:
+        - idade
+        - regras proibitivas
+        - score do alimento
+        - grau de processamento
 
-        0–6 meses:
-        - qualquer alimento → "Não pode!"
+        ---
 
-        6–12 meses:
-        - açúcar/adicionado → "Não pode!"
-        - ultraprocessado → "Não pode!"
-        - mel → "Não pode!"
+        ## 1. Regras absolutas ("Não pode!")
 
-        12–24 meses:
-        - açúcar/adicionado → "Não pode!"
-        - ultraprocessado → "Não pode!"
+        ### 0–6 meses
+        Qualquer alimento ou líquido diferente de leite materno:
+        → "Não pode!"
+
+        ---
+
+        ### 6–12 meses
+
+        Se houver QUALQUER um dos itens abaixo:
+        - açúcar adicionado
+        - mel
+        - bebida açucarada
+        - ultraprocessado
+        - estimulantes
+
+        → "Não pode!"
+
+        ---
+
+        ### 12–24 meses
+
+        Se houver:
+        - açúcar adicionado
+        - bebida açucarada
+        - ultraprocessado
+
+        → "Não pode!"
+
+        ---
+
+        ## 2. Classificação por qualidade alimentar
+
+        Use APENAS se o alimento NÃO cair nas regras absolutas acima.
+
+        ### "Pode!"
+
+        O alimento:
+        - não possui itens proibidos para a idade
+        - é in natura ou minimamente processado
+        - possui boa qualidade nutricional
+        - score ≥ 60
+        - baixo teor de açúcar, sódio e gordura saturada
+
+        ---
+
+        ### "Evitável"
+
+        Use quando o alimento NÃO é proibido, mas possui baixa qualidade nutricional ou consumo não recomendado frequente.
+
+        Exemplos:
+        - alimento processado
+        - sódio elevado
+        - gordura saturada elevada
+        - baixo valor nutricional
+        - score entre 30–59
+
+        Importante:
+        - "Evitável" NÃO significa proibido
+        - significa consumo ocasional/moderado
+
+        ---
+
+        ### "Não pode!"
+
+        Use quando:
+        - existir regra proibitiva por idade
+        - score < 30
+        - houver alto risco nutricional
+        - houver grande incerteza na análise
+        - ultraprocessado para menores de 2 anos
+
+        ---
+
+        ## 3. Regras adicionais
+
+        - Ultraprocessado:
+          - <2 anos → sempre "Não pode!"
+          - ≥2 anos → no mínimo "Evitável"
+
+        - Incerteza:
+          - nunca retornar "Pode!"
+          - prefira "Evitável" ou "Não pode!"
+
+        - Seja conservador em alimentos infantis
 
         ---
 
