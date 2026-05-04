@@ -18,14 +18,14 @@ struct ResultStepView: View {
     private let demoScore: Int = 72
  
     private let badges: [(label: String, icon: String, color: Color, detail: String)] = [
-        ("Pode", "checkmark.circle.fill", .green, "Adequado para a criança"),
-        ("Evitável", "exclamationmark.triangle.fill", .orange, "Consumo com moderação"),
-        ("Não pode", "xmark.octagon.fill", .red, "Não recomendado para a idade")
+        ("Pode", "checkmark.circle.fill", .green, "Seguro para consumo"),
+        ("Evitável", "exclamationmark.triangle.fill", .orange, "Não é o ideal"),
+        ("Não pode", "xmark.octagon.fill", .red, "Inadequado para a idade")
     ]
  
     var body: some View {
         VStack(spacing: 20) {
-            Spacer(minLength: 20)
+            Spacer()
  
             FoodScoreView(score: scoreValue)
                 .opacity(appeared ? 1 : 0)
@@ -45,6 +45,7 @@ struct ResultStepView: View {
                                 .font(.subheadline.weight(.semibold))
                             Text(badge.detail)
                                 .font(.caption)
+                                .multilineTextAlignment(.leading)
                                 .foregroundStyle(.secondary)
                         }
  
@@ -60,8 +61,6 @@ struct ResultStepView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .background(Color(.secondarySystemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .opacity(badgesVisible[i] ? 1 : 0)
                     .offset(x: badgesVisible[i] ? 0 : 32)
                     .animation(
@@ -89,7 +88,7 @@ struct ResultStepView: View {
                     .animation(.spring(duration: 0.5).delay(0.25), value: appeared)
             }
  
-            Spacer(minLength: 20)
+            Spacer()
         }
         .padding(.horizontal, 4)
         .onChange(of: isActive) { _, active in
