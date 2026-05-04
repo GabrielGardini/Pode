@@ -11,21 +11,21 @@ import SwiftData
 struct AddChildOnboardingView: View {
     let step: OnboardingStep
     let isActive: Bool
-
+    
     @Binding var name: String
     @Binding var birthDate: Date
-
+    
     // Estado de animação por elemento (mesmo padrão do ResultStepView)
     @State private var titleVisible = false
     @State private var avatarVisible = false
     @State private var nameFieldVisible = false
     @State private var dateFieldVisible = false
-
+    
     private var age: String {
         let components = Calendar.current.dateComponents([.year, .month], from: birthDate, to: .now)
         let years = components.year ?? 0
         let months = components.month ?? 0
-
+        
         if birthDate > .now {
             return "Data inválida"
         } else if years == 0 && months == 0 {
@@ -38,10 +38,10 @@ struct AddChildOnboardingView: View {
             return "\(years) \(years == 1 ? "ano" : "anos") e \(months) \(months == 1 ? "mês" : "meses")"
         }
     }
-
+    
     var body: some View {
         VStack(spacing: 0) {
-
+            
             // MARK: - Título
             if let title = step.title {
                 Text(title)
@@ -52,7 +52,7 @@ struct AddChildOnboardingView: View {
                     .offset(y: titleVisible ? 0 : 16)
                     .animation(.spring(duration: 0.5).delay(0.1), value: titleVisible)
             }
-
+            
             // MARK: - Avatar
             VStack(spacing: 14) {
                 ZStack {
@@ -64,7 +64,7 @@ struct AddChildOnboardingView: View {
                         .foregroundStyle(Color.accentColor)
                         .contentTransition(.symbolEffect(.replace))
                 }
-
+                
                 if !name.isEmpty {
                     Text(name)
                         .font(.title3.weight(.semibold))
@@ -81,15 +81,15 @@ struct AddChildOnboardingView: View {
             .opacity(avatarVisible ? 1 : 0)
             .offset(y: avatarVisible ? 0 : 20)
             .animation(.spring(duration: 0.5, bounce: 0.3).delay(0.25), value: avatarVisible)
-
+            
             // MARK: - Campo Nome
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Nome")
                     .font(.body)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 4)
-
+                    .padding(.horizontal, 16)
+                
                 TextField("Nome da criança", text: $name)
                     .textInputAutocapitalization(.words)
                     .padding(.horizontal, 14)
@@ -100,15 +100,15 @@ struct AddChildOnboardingView: View {
             .opacity(nameFieldVisible ? 1 : 0)
             .offset(x: nameFieldVisible ? 0 : 32)
             .animation(.spring(duration: 0.5, bounce: 0.3).delay(0.4), value: nameFieldVisible)
-
+            
             // MARK: - Campo Data
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Data de nascimento")
                     .font(.body)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
-                    .padding(.horizontal, 4)
-
+                    .padding(.horizontal, 16)
+                
                 VStack(spacing: 0) {
                     DatePicker(
                         "",
@@ -119,10 +119,10 @@ struct AddChildOnboardingView: View {
                     .datePickerStyle(.wheel)
                     .labelsHidden()
                     .frame(maxWidth: .infinity)
-
+                    
                     Divider()
                         .padding(.horizontal, 14)
-
+                    
                     HStack(spacing: 8) {
                         Image(systemName: "birthday.cake")
                             .foregroundStyle(Color.accentColor)
@@ -154,7 +154,7 @@ struct AddChildOnboardingView: View {
             if isActive { startAnimations() }
         }
     }
-
+    
     private func startAnimations() {
         resetAnimations()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -164,7 +164,7 @@ struct AddChildOnboardingView: View {
             dateFieldVisible = true
         }
     }
-
+    
     private func resetAnimations() {
         titleVisible = false
         avatarVisible = false
