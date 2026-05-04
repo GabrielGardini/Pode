@@ -104,6 +104,9 @@ struct ScanView: View {
                 set: { _ in pipeline.state = .idle }
             )
         ) {
+            Button("Tentar Novamente") {
+                presentScanner = true
+            }
             Button("OK", role: .cancel) { }
         } message: {
             if case .error(let message) = pipeline.state {

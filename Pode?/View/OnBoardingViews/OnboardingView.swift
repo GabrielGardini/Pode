@@ -16,7 +16,7 @@ struct OnboardingView: View {
  
     private let steps: [OnboardingStep] = [
         OnboardingStep(
-            title: "Bem-vindo ao Pode?",
+            title: "Bem-vindo ao Pode Comer?",
             subtitle: "Descubra rapidamente se um alimento é adequado para a criança.",
             systemImage: "sparkles"
         ),
