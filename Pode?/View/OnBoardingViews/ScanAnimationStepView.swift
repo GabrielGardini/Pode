@@ -23,9 +23,7 @@ struct ScanAnimationStepView: View {
         VStack(spacing: 28) {
             Spacer(minLength: 20)
             
-            // Scan frame
             ZStack {
-                // Simulated label content
                 VStack(spacing: 6) {
                     ForEach(0..<5, id: \.self) { i in
                         RoundedRectangle(cornerRadius: 3)
@@ -36,7 +34,6 @@ struct ScanAnimationStepView: View {
                     }
                 }
                 
-                // Scan line
                 Rectangle()
                     .fill(
                         LinearGradient(
@@ -49,7 +46,6 @@ struct ScanAnimationStepView: View {
                     .offset(y: scanOffset)
                     .opacity(scanOpacity)
                 
-                // Corner marks
                 ScanCorners(pulse: cornerPulse)
                     .foregroundStyle(Color.accentColor)
                     .frame(width: frameSize, height: frameSize)
@@ -57,22 +53,25 @@ struct ScanAnimationStepView: View {
             .frame(width: frameSize, height: frameSize)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             
-            VStack(spacing: 10) {
-                Text(step.title)
-                    .font(.largeTitle.bold())
-                    .multilineTextAlignment(.center)
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 16)
-                    .animation(.spring(duration: 0.5).delay(0.15), value: appeared)
-                
-                Text(step.subtitle)
-                    .font(.body)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal)
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 12)
-                    .animation(.spring(duration: 0.5).delay(0.25), value: appeared)
+            if let title = step.title,
+               let subtitle = step.subtitle {
+                VStack(spacing: 10) {
+                    Text(title)
+                        .font(.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                        .opacity(appeared ? 1 : 0)
+                        .offset(y: appeared ? 0 : 16)
+                        .animation(.spring(duration: 0.5).delay(0.15), value: appeared)
+                    
+                    Text(subtitle)
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal)
+                        .opacity(appeared ? 1 : 0)
+                        .offset(y: appeared ? 0 : 12)
+                        .animation(.spring(duration: 0.5).delay(0.25), value: appeared)
+                }
             }
             
             Spacer(minLength: 20)

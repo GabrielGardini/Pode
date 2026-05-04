@@ -69,23 +69,26 @@ struct ResultStepView: View {
                     )
                 }
             }
- 
-            VStack(spacing: 10) {
-                Text(step.title)
-                    .font(.largeTitle.bold())
-                    .multilineTextAlignment(.center)
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 16)
-                    .animation(.spring(duration: 0.5).delay(0.15), value: appeared)
- 
-                Text(step.subtitle)
-                    .font(.body)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal)
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 12)
-                    .animation(.spring(duration: 0.5).delay(0.25), value: appeared)
+            
+            if let title = step.title,
+               let subtitle = step.subtitle {
+                VStack(spacing: 10) {
+                    Text(title)
+                        .font(.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                        .opacity(appeared ? 1 : 0)
+                        .offset(y: appeared ? 0 : 16)
+                        .animation(.spring(duration: 0.5).delay(0.15), value: appeared)
+                    
+                    Text(subtitle)
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal)
+                        .opacity(appeared ? 1 : 0)
+                        .offset(y: appeared ? 0 : 12)
+                        .animation(.spring(duration: 0.5).delay(0.25), value: appeared)
+                }
             }
  
             Spacer()
